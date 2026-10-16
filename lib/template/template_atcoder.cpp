@@ -1,3 +1,5 @@
+// Library: https://github.com/nattoid/cp-library
+// clang-format off
 #include <bits/stdc++.h>
 #include <atcoder/all>
 
@@ -131,20 +133,21 @@ debug_out(tail...);
 
 struct Setup_io { Setup_io() { ios_base::sync_with_stdio(0); cin.tie(0); cout << fixed << setprecision(15); } } setup_io;
 #pragma endregion
+// clang-format on
 
-void solve(){
-    
+void solve() {
+
     return;
 }
 
-int main(){
+int main() {
     int t = 1;
 #ifdef LOCAL
     cin >> t;
 #else
-    //cin >> t;
+    // cin >> t;
 #endif
-    while(t--){
+    while (t--) {
         solve();
     }
     return 0;
