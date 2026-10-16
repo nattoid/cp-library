@@ -1,0 +1,48 @@
+cpsetup A: 作業ディレクトリを作成
+oj-bundle main.cpp > submit.cpp
+
+gdb -q ./main
+run
+bt
+
+r < in.txt
+1行進める: n （関数の中には入らない）、s （関数の中に入る）
+変数確認: p 変数名 （例: p x）
+異常終了時の履歴確認: bt
+
+explorer.exe .
+
+auto f = [&](this auto&& self, int l, int r) -> ll {
+    self(l, r)
+
+auto operator<=>(const Point&) const = default;
+
+string colors = "BWR";
+auto f = [&](char c) { return colors.find(c); };
+cout << colors[ans] << el;
+
+std::fill(std::begin(arr), std::end(arr), 0);
+
+auto it = lst.begin();
+    
+    // イテレータを n 進める (計算量: O(N))
+    std::advance(it, n);
+
+stable_sort(ls.begin(), ls.end(), [](int a, int b){
+
+LB(v, {x, y})は型推論ができないのでエラー。pi()を使う。
+
+Cntr + K, C + 8でたたむ
+
+
+std::vector<int> vec(H * W, 0);
+
+    // 1. vecのデータポインタと、各次元のサイズを渡してビューを作成
+    std::mdspan ms(vec.data(), H, W);
+
+    // 2. 多次元添字演算子でアクセス
+    ms[1, 2] = 42;
+
+git add .github/workflows/verify.yml
+git commit -m "Fix GitHub Actions permissions"
+git push origin main
