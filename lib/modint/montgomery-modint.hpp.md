@@ -97,7 +97,7 @@ data:
   - lib/fps/arbitrary-fps.hpp
   - lib/fps/fps-circular.hpp
   - lib/ntt/arbitrary-ntt.hpp
-  timestamp: '2026-10-16 16:16:24+09:00'
+  timestamp: '2026-10-16 11:43:12+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []
 documentation_of: lib/modint/montgomery-modint.hpp

@@ -95,8 +95,7 @@ data:
     pages:
     - icon: ':heavy_check_mark:'
       path: lib/nt/factorize.hpp
-      title: "Miller-Rabin\u7D20\u6570\u5224\u5B9A\u6CD5 (\u30E2\u30F3\u30B4\u30E1\
-        \u30EA\u4E57\u7B97\u7248)"
+      title: lib/nt/factorize.hpp
     - icon: ':heavy_check_mark:'
       path: lib/nt/modular.hpp
       title: lib/nt/modular.hpp

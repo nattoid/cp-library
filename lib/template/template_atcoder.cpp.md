@@ -146,7 +146,7 @@ data:
   isVerificationFile: false
   path: lib/template/template_atcoder.cpp
   requiredBy: []
-  timestamp: '2026-10-16 16:16:24+09:00'
+  timestamp: '2026-10-16 14:51:07+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []
 documentation_of: lib/template/template_atcoder.cpp

@@ -153,15 +153,40 @@ data:
   isVerificationFile: false
   path: lib/nt/factorize.hpp
   requiredBy: []
-  timestamp: '2026-10-16 16:16:24+09:00'
+  timestamp: '2026-10-16 15:35:25+09:00'
   verificationStatus: LIBRARY_ALL_AC
   verifiedWith:
   - verify/nt/factorize.test.cpp
 documentation_of: lib/nt/factorize.hpp
 layout: document
-redirect_from:
-- /library/lib/nt/factorize.hpp
-- /library/lib/nt/factorize.hpp.html
-title: "Miller-Rabin\u7D20\u6570\u5224\u5B9A\u6CD5 (\u30E2\u30F3\u30B4\u30E1\u30EA\
-  \u4E57\u7B97\u7248)"
 ---
+
+# 整数論ライブラリ (素因数分解・素数判定)
+
+素数判定、素因数分解、約数列挙、オイラーの $\phi$ 関数などを提供するライブラリです。
+内部的にモンゴメリ乗算を用いた Miller-Rabin 素数判定法と、Pollard's rho アルゴリズムを使用しており、$O(N^{1/4})$ ベースで高速に動作します。
+
+## 提供する関数
+
+### `is_prime(ll n)`
+`n` が素数かどうかを判定します。
+- **計算量:** $O(\log N)$
+- 内部仕様: 64bit整数の範囲で確定的に判定するため、底として特定の素数の集合を用いています。
+
+### `factorize(ll n)`
+`n` を素因数分解し、`(素因数, 指数)` のペアの配列を素因数の昇順にソートして返します。
+- **計算量:** 期待値 $O(N^{1/4})$
+- $n \le 1$ の場合は空の配列を返します。
+
+### `divisors(ll n)`
+`n` のすべての約数を昇順に列挙して返します。
+- **計算量:** 期待値 $O(N^{1/4} + D \log D)$ （$D$ は約数の個数）
+- 内部で `factorize` を呼び出し、得られた素因数からDFS的に約数を構築してソートします。
+
+### `phi(ll n)`
+オイラーの $\phi$ 関数（$n$ と互いに素な $1$ 以上 $n$ 以下の整数の個数）の値を返します。
+- **計算量:** 期待値 $O(N^{1/4})$
+
+## 参考文献
+- [https://andantesoft.hatenablog.com/entry/2025/05/21/164352](https://andantesoft.hatenablog.com/entry/2025/05/21/164352)
+- [https://judge.yosupo.jp/submission/189742](https://judge.yosupo.jp/submission/189742)
