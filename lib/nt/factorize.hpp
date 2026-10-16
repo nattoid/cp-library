@@ -1,16 +1,23 @@
+/**
+ * @file factorize.hpp
+ * @brief
+ * 素数判定、素因数分解、約数列挙、オイラーのφ関数などを提供する整数論ライブラリ
+ * @see https://andantesoft.hatenablog.com/entry/2025/05/21/164352
+ * @see https://judge.yosupo.jp/submission/189742
+ */
+
 #pragma once
-#include <vector>
-#include <utility>
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
+#include <utility>
+#include <vector>
+
 #include "modular.hpp"
 
-// reference
-// https://andantesoft.hatenablog.com/entry/2025/05/21/164352
-// https://judge.yosupo.jp/submission/189742
 namespace nt {
 
+/** @cond INTERNAL */
 namespace internal {
 
 using u64 = uint64_t;
@@ -37,7 +44,7 @@ inline u64 gcd_stein(u64 x, u64 y) {
 // 64bit 減算型遅延モンゴメリ演算器 (mod < 2^62 かつ奇数)
 struct Montgomery {
     u64 mod;
-    u64 minv; // mod * minv == 1 (mod 2^64)
+    u64 minv;  // mod * minv == 1 (mod 2^64)
 
     Montgomery(u64 n) : mod(n), minv(n) {
         for (int i = 0; i < 5; i++) minv *= 2 - mod * minv;
@@ -56,27 +63,34 @@ struct Montgomery {
     }
 };
 
-} // namespace internal
+}  // namespace internal
+/** @endcond */
 
-// Miller-Rabin素数判定法 (モンゴメリ乗算版): O(log N)
+/**
+ * @brief Miller-Rabin素数判定法 (モンゴメリ乗算版)
+ * @param n_ 判定する整数
+ * @return true 素数である
+ * @return false 合成数である、または1以下
+ * @note 計算量: O(log N)
+ */
 inline bool is_prime(ll n_) {
     if (n_ <= 1) return false;
-    u64 n = n_;
+    internal::u64 n = n_;
     if (n == 2 || n == 3 || n == 5 || n == 7) return true;
     if (n % 2 == 0 || n % 3 == 0 || n % 5 == 0 || n % 7 == 0) return false;
 
     internal::Montgomery m(n);
-    u64 d = n - 1;
+    internal::u64 d = n - 1;
     int s = __builtin_ctzll(d);
     d >>= s;
 
     // モンゴメリ空間における 1 と n - 1、および変換用定数 R^2 mod n
-    u64 one = (-n) % n;
-    u64 minus_one = n - one;
-    u64 r2 = (-internal::u128(n)) % n;
+    internal::u64 one = (-n) % n;
+    internal::u64 minus_one = n - one;
+    internal::u64 r2 = (-internal::u128(n)) % n;
 
-    auto mod_pow_mont = [&](u64 a_mont, u64 exp) {
-        u64 res = one;
+    auto mod_pow_mont = [&](internal::u64 a_mont, internal::u64 exp) {
+        internal::u64 res = one;
         while (exp > 0) {
             if (exp & 1) res = m.mul(res, a_mont);
             a_mont = m.mul(a_mont, a_mont);
@@ -86,10 +100,10 @@ inline bool is_prime(ll n_) {
     };
 
     auto check = [&](const auto& bases) {
-        for (u64 a : bases) {
+        for (internal::u64 a : bases) {
             if (n <= a) break;
-            u64 a_mont = m.mul(a, r2);
-            u64 x = mod_pow_mont(a_mont, d);
+            internal::u64 a_mont = m.mul(a, r2);
+            internal::u64 x = mod_pow_mont(a_mont, d);
             if (x == one || x == minus_one) continue;
             bool composite = true;
             for (int r = 1; r < s; r++) {
@@ -107,23 +121,29 @@ inline bool is_prime(ll n_) {
     };
 
     if (n < 4759123141ULL) {
-        static constexpr u64 bases_small[] = {2, 7, 61};
+        static constexpr internal::u64 bases_small[] = {2, 7, 61};
         return check(bases_small);
     } else {
-        static constexpr u64 bases_large[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022};
+        static constexpr internal::u64 bases_large[] = {
+            2, 325, 9375, 28178, 450775, 9780504, 1795265022};
         return check(bases_large);
     }
 }
 
-// Pollard's rho (モンゴメリ乗算 + 2系列並列Brent法): O(N^{1/4})
+/**
+ * @brief Pollard's rhoアルゴリズムによる素因数探索
+ * @param n_ 素因数を探す対象の整数 (合成数であることを前提とする)
+ * @return ll 見つかった素因数 (n_ の非自明な約数)
+ * @note 計算量: 期待値 O(N^{1/4})
+ */
 inline ll pollard_rho(ll n_) {
     assert(n_ > 1);
     internal::u64 n = n_;
     if (n % 2 == 0) return 2;
     if (is_prime(n)) return n;
 
-    using internal::u64;
     using internal::gcd_stein;
+    using internal::u64;
     const internal::Montgomery m(n);
 
     constexpr u64 C1 = 1, C2 = 2, M = 512;
@@ -131,7 +151,7 @@ inline ll pollard_rho(ll n_) {
 
 retry:
     u64 z1 = Z1, z2 = Z2;
-    for (size_t k = M; ; k *= 2) {
+    for (size_t k = M;; k *= 2) {
         const u64 x1 = z1 + n;
         const u64 x2 = z2 + n;
         for (size_t j = 0; j < k; j += M) {
@@ -180,7 +200,13 @@ retry:
     }
 }
 
-// O(N^{1/4}) 素因数分解
+/**
+ * @brief 高速素因数分解
+ * @param n 分解する整数
+ * @return std::vector<std::pair<ll, int>> (素因数, 指数)
+ * のペアを素因数の昇順に格納した配列
+ * @note 計算量: 期待値 O(N^{1/4})
+ */
 inline std::vector<std::pair<ll, int>> factorize(ll n) {
     std::vector<std::pair<ll, int>> res;
     if (n <= 1) return res;
@@ -221,9 +247,15 @@ inline std::vector<std::pair<ll, int>> factorize(ll n) {
     return res;
 }
 
-// 素因数分解の結果から約数を列挙し、昇順にソートして返す
+/**
+ * @brief 素因数分解の結果から約数を列挙する
+ * @tparam T 整数型
+ * @param factors factorize() 等で得られた (素因数, 指数) の配列
+ * @return std::vector<T> 約数を昇順にソートした配列
+ */
 template <typename T>
-inline std::vector<T> divisors_from_factors(const std::vector<std::pair<T, int>>& factors) {
+inline std::vector<T> divisors_from_factors(
+    const std::vector<std::pair<T, int>>& factors) {
     size_t sz = 1;
     for (const auto& [p, e] : factors) sz *= (e + 1);
     std::vector<T> res;
@@ -244,13 +276,24 @@ inline std::vector<T> divisors_from_factors(const std::vector<std::pair<T, int>>
     return res;
 }
 
-// O(N^{1/4} + D log D) で単一の N の約数を昇順列挙
+/**
+ * @brief 単一の整数の約数を昇順に列挙する
+ * @param n 対象の整数
+ * @return std::vector<ll> 約数を昇順にソートした配列
+ * @note 計算量: 期待値 O(N^{1/4} + D log D) (Dは約数の個数)
+ */
 inline std::vector<ll> divisors(ll n) {
     if (n <= 0) return {};
     return divisors_from_factors(factorize(n));
 }
 
-// O(N^{1/4}) で単一の N に対するオイラーの φ 関数を求める
+/**
+ * @brief オイラーのφ関数
+ * @details nと互いに素な1以上n以下の整数の個数を求める
+ * @param n 対象の整数
+ * @return ll φ(n) の値
+ * @note 計算量: 期待値 O(N^{1/4})
+ */
 inline ll phi(ll n) {
     if (n <= 0) return 0;
     ll res = n;
@@ -260,4 +303,4 @@ inline ll phi(ll n) {
     return res;
 }
 
-} // namespace nt
+}  // namespace nt
