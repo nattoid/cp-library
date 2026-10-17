@@ -69,14 +69,14 @@ data:
     \ = (ll)((u128)cur * a % m);\n    }\n\n    ll a_step = pow_mod(a, step, m);\n\
     \    cur = c;\n    for (ll i = 1; i <= step; i++) {\n        cur = (ll)((u128)cur\
     \ * a_step % m);\n        int j = mp.find(cur);\n        if (j != -1) {\n    \
-    \        ll ans = i * step - j + k;\n            if (ans > 0 || allow_zero) return\
-    \ ans;\n        }\n    }\n\n    return -1;\n}\n\n}  // namespace nt"
+    \        return i * step - j + k;\n        }\n    }\n\n    return -1;\n}\n\n}\
+    \  // namespace nt"
   dependsOn:
   - lib/nt/modular.hpp
   isVerificationFile: false
   path: lib/nt/discrete_log.hpp
   requiredBy: []
-  timestamp: '2026-10-17 15:06:39+09:00'
+  timestamp: '2026-10-17 16:01:29+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []
 documentation_of: lib/nt/discrete_log.hpp

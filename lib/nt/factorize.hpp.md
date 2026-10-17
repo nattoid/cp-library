@@ -6,7 +6,7 @@ data:
     title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u300164bit\u6E1B\u7B97\u578B\u9045\
       \u5EF6\u30E2\u30F3\u30B4\u30E1\u30EA\u6F14\u7B97\u5668\u3001extgcd\u3001CRT"
   _extendedRequiredBy:
-  - icon: ':warning:'
+  - icon: ':heavy_check_mark:'
     path: lib/nt/primitive_root.hpp
     title: "\u4E57\u6CD5\u4F4D\u6570 (Order) \u3068\u539F\u59CB\u6839 (Primitive Root)\
       \ \u306E\u63A2\u7D22"
@@ -14,6 +14,9 @@ data:
   - icon: ':heavy_check_mark:'
     path: verify/nt/factorize.test.cpp
     title: verify/nt/factorize.test.cpp
+  - icon: ':heavy_check_mark:'
+    path: verify/nt/primitive_root.test.cpp
+    title: verify/nt/primitive_root.test.cpp
   _isVerificationFailed: false
   _pathExtension: hpp
   _verificationStatusIcon: ':heavy_check_mark:'
@@ -121,9 +124,10 @@ data:
   path: lib/nt/factorize.hpp
   requiredBy:
   - lib/nt/primitive_root.hpp
-  timestamp: '2026-10-17 15:06:39+09:00'
+  timestamp: '2026-10-17 16:01:29+09:00'
   verificationStatus: LIBRARY_ALL_AC
   verifiedWith:
+  - verify/nt/primitive_root.test.cpp
   - verify/nt/factorize.test.cpp
 documentation_of: lib/nt/factorize.hpp
 layout: document

@@ -9,10 +9,13 @@ data:
     title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u300164bit\u6E1B\u7B97\u578B\u9045\
       \u5EF6\u30E2\u30F3\u30B4\u30E1\u30EA\u6F14\u7B97\u5668\u3001extgcd\u3001CRT"
   _extendedRequiredBy: []
-  _extendedVerifiedWith: []
+  _extendedVerifiedWith:
+  - icon: ':heavy_check_mark:'
+    path: verify/nt/primitive_root.test.cpp
+    title: verify/nt/primitive_root.test.cpp
   _isVerificationFailed: false
   _pathExtension: hpp
-  _verificationStatusIcon: ':warning:'
+  _verificationStatusIcon: ':heavy_check_mark:'
   attributes:
     document_title: "\u4E57\u6CD5\u4F4D\u6570 (Order) \u3068\u539F\u59CB\u6839 (Primitive\
       \ Root) \u306E\u63A2\u7D22"
@@ -92,30 +95,27 @@ data:
     \ - 1);\n    std::vector<u64> exps;\n    exps.reserve(factors_phi.size() + 1);\n\
     \    if (factors_m[0].second >= 2) {\n        exps.push_back(phi_n / p);\n   \
     \ }\n    for (const auto& [q, e] : factors_phi) {\n        exps.push_back(phi_n\
-    \ / q);\n    }\n\n    if (n & 1) {\n        // n = p^k \u306E\u5834\u5408\u306F\
-    \u5947\u6570\u306A\u306E\u3067\u30E2\u30F3\u30B4\u30E1\u30EA\u4E57\u7B97\u304C\
-    \u4F7F\u3048\u308B\n        Montgomery mont(n);\n        u64 one = mont.one();\n\
-    \        u64 r2 = mont.r2();\n        for (u64 g = 2;; g++) {\n            if\
-    \ (g % p == 0) continue;\n            u64 g_mont = mont.mul(g, r2);\n        \
-    \    bool ok = true;\n            for (u64 exp : exps) {\n                if (mont.pow(g_mont,\
-    \ exp, one) == one) {\n                    ok = false;\n                    break;\n\
-    \                }\n            }\n            if (ok) return g;\n        }\n\
-    \    } else {\n        // n = 2*p^k \u306E\u5834\u5408\n        for (ll g = 3;;\n\
-    \             g += 2) {  // gcd(g, 2*p^k) == 1 \u3088\u308A g \u306F\u5947\u6570\
-    \u306E\u307F\u63A2\u7D22\u3059\u308C\u3070\u3088\u3044\n            if (g % p\
-    \ == 0) continue;\n            bool ok = true;\n            for (u64 exp : exps)\
-    \ {\n                if (pow_mod(g, exp, n) == 1) {\n                    ok =\
-    \ false;\n                    break;\n                }\n            }\n     \
-    \       if (ok) return g;\n        }\n    }\n}\n\n}  // namespace nt"
+    \ / q);\n    }\n\n    // n = p^k \u307E\u305F\u306F n = 2*p^k \u306E\u3044\u305A\
+    \u308C\u3067\u3042\u3063\u3066\u3082\u3001\n    // \u5947\u6570\u306E\u6CD5 m\
+    \ = p^k \u4E0A\u3067\u306E\u4F4D\u6570\u304C phi(n) == phi(m) \u306B\u4E00\u81F4\
+    \u3059\u308B\u304B\u3092\u30E2\u30F3\u30B4\u30E1\u30EA\u4E57\u7B97\u3067\u5224\
+    \u5B9A\u3067\u304D\u308B\uFF01\n    Montgomery mont(m);\n    u64 one = mont.one();\n\
+    \    u64 r2 = mont.r2();\n    u64 step = (n & 1) ? 1 : 2;\n    u64 start = (n\
+    \ & 1) ? 2 : 3;\n\n    for (u64 g = start;; g += step) {\n        if (g % p ==\
+    \ 0) continue;\n        u64 g_mont = mont.mul(g % m, r2);\n        bool ok = true;\n\
+    \        for (u64 exp : exps) {\n            if (mont.pow(g_mont, exp, one) ==\
+    \ one) {\n                ok = false;\n                break;\n            }\n\
+    \        }\n        if (ok) return g;\n    }\n}\n\n}  // namespace nt"
   dependsOn:
   - lib/nt/factorize.hpp
   - lib/nt/modular.hpp
   isVerificationFile: false
   path: lib/nt/primitive_root.hpp
   requiredBy: []
-  timestamp: '2026-10-17 15:06:39+09:00'
-  verificationStatus: LIBRARY_NO_TESTS
-  verifiedWith: []
+  timestamp: '2026-10-17 16:01:29+09:00'
+  verificationStatus: LIBRARY_ALL_AC
+  verifiedWith:
+  - verify/nt/primitive_root.test.cpp
 documentation_of: lib/nt/primitive_root.hpp
 layout: document
 redirect_from:

@@ -8,10 +8,10 @@ data:
   - icon: ':heavy_check_mark:'
     path: lib/nt/factorize.hpp
     title: lib/nt/factorize.hpp
-  - icon: ':warning:'
-    path: lib/nt/mod-sqrt.hpp
+  - icon: ':heavy_check_mark:'
+    path: lib/nt/mod_sqrt.hpp
     title: "\u5E73\u65B9\u5270\u4F59 (Tonelli-Shanks algorithm)"
-  - icon: ':warning:'
+  - icon: ':heavy_check_mark:'
     path: lib/nt/primitive_root.hpp
     title: "\u4E57\u6CD5\u4F4D\u6570 (Order) \u3068\u539F\u59CB\u6839 (Primitive Root)\
       \ \u306E\u63A2\u7D22"
@@ -19,6 +19,12 @@ data:
   - icon: ':heavy_check_mark:'
     path: verify/nt/factorize.test.cpp
     title: verify/nt/factorize.test.cpp
+  - icon: ':heavy_check_mark:'
+    path: verify/nt/primitive_root.test.cpp
+    title: verify/nt/primitive_root.test.cpp
+  - icon: ':heavy_check_mark:'
+    path: verify/nt/sqrt_mod.test.cpp
+    title: verify/nt/sqrt_mod.test.cpp
   _isVerificationFailed: false
   _pathExtension: hpp
   _verificationStatusIcon: ':heavy_check_mark:'
@@ -78,36 +84,38 @@ data:
     \ u, v] = extgcd(a, b);\n    x = u;\n    y = v;\n    return g;\n}\n\n/**\n * @brief\
     \ \u30E2\u30B8\u30E5\u30E9\u9006\u5143\u3092\u6C42\u3081\u308B (gcd(a, m) == 1\
     \ \u3092\u4EEE\u5B9A)\n */\ninline ll inv_mod(ll a, ll m) {\n    assert(m > 0);\n\
-    \    auto [g, x, y] = extgcd(a, m);\n    return x;\n}\n\n/**\n * @brief a^n mod\
-    \ m \u3092\u8A08\u7B97\u3059\u308B\n */\ninline ll pow_mod(ll a, ll n, ll m) {\n\
-    \    assert(n >= 0 && m > 0);\n    if (m == 1) return 0;\n    ll res = 1;\n  \
-    \  a %= m;\n    if (a < 0) a += m;\n    while (n > 0) {\n        if (n & 1) res\
-    \ = (ll)((u128)res * a % m);\n        a = (ll)((u128)a * a % m);\n        n >>=\
-    \ 1;\n    }\n    return res;\n}\n\n/**\n * @brief \u4E2D\u56FD\u5270\u4F59\u5B9A\
-    \u7406 (2\u5909\u6570\u7248)\n */\ninline std::pair<ll, ll> crt(ll r1, ll m1,\
-    \ ll r2, ll m2) {\n    assert(m1 >= 1 && m2 >= 1);\n    r1 %= m1;\n    if (r1\
-    \ < 0) r1 += m1;\n    r2 %= m2;\n    if (r2 < 0) r2 += m2;\n\n    auto [g, p,\
-    \ q] = extgcd(m1, m2);\n    if ((r2 - r1) % g != 0) return {0, 0};\n\n    ll u\
-    \ = m2 / g;\n    ll t = (ll)((i128)(r2 - r1) / g % u * p % u);\n    if (t < 0)\
-    \ t += u;\n\n    ll lcm = m1 * u;\n    ll r = r1 + t * m1;\n    return {r, lcm};\n\
-    }\n\n/**\n * @brief \u4E2D\u56FD\u5270\u4F59\u5B9A\u7406 (\u914D\u5217\u7248)\n\
-    \ */\ninline std::pair<ll, ll> crt(const std::vector<ll>& r,\n               \
-    \              const std::vector<ll>& m) {\n    assert(r.size() == m.size());\n\
-    \    i128 r0 = 0, m0 = 1;\n    for (size_t i = 0; i < r.size(); i++) {\n     \
-    \   auto [r1, m1] = crt((ll)r0, (ll)m0, r[i], m[i]);\n        if (m1 == 0) return\
-    \ {0, 0};\n        r0 = r1;\n        m0 = m1;\n    }\n    return {(ll)r0, (ll)m0};\n\
-    }\n\n}  // namespace nt"
+    \    auto [g, x, y] = extgcd(a, m);\n    assert(g == 1);\n    return x < 0 ? x\
+    \ + m : x;\n}\n\n/**\n * @brief a^n mod m \u3092\u8A08\u7B97\u3059\u308B\n */\n\
+    inline ll pow_mod(ll a, ll n, ll m) {\n    assert(n >= 0 && m > 0);\n    if (m\
+    \ == 1) return 0;\n    ll res = 1;\n    a %= m;\n    if (a < 0) a += m;\n    while\
+    \ (n > 0) {\n        if (n & 1) res = (ll)((u128)res * a % m);\n        a = (ll)((u128)a\
+    \ * a % m);\n        n >>= 1;\n    }\n    return res;\n}\n\n/**\n * @brief \u4E2D\
+    \u56FD\u5270\u4F59\u5B9A\u7406 (2\u5909\u6570\u7248)\n */\ninline std::pair<ll,\
+    \ ll> crt(ll r1, ll m1, ll r2, ll m2) {\n    assert(m1 >= 1 && m2 >= 1);\n   \
+    \ r1 %= m1;\n    if (r1 < 0) r1 += m1;\n    r2 %= m2;\n    if (r2 < 0) r2 += m2;\n\
+    \n    auto [g, p, q] = extgcd(m1, m2);\n    if ((r2 - r1) % g != 0) return {0,\
+    \ 0};\n\n    ll u = m2 / g;\n    ll t = (ll)((i128)(r2 - r1) / g % u * p % u);\n\
+    \    if (t < 0) t += u;\n\n    ll lcm = m1 * u;\n    ll r = r1 + t * m1;\n   \
+    \ return {r, lcm};\n}\n\n/**\n * @brief \u4E2D\u56FD\u5270\u4F59\u5B9A\u7406 (\u914D\
+    \u5217\u7248)\n */\ninline std::pair<ll, ll> crt(const std::vector<ll>& r,\n \
+    \                            const std::vector<ll>& m) {\n    assert(r.size()\
+    \ == m.size());\n    ll r0 = 0, m0 = 1;\n    for (size_t i = 0; i < r.size();\
+    \ i++) {\n        auto [r1, m1] = crt(r0, m0, r[i], m[i]);\n        if (m1 ==\
+    \ 0) return {0, 0};\n        r0 = r1;\n        m0 = m1;\n    }\n    return {r0,\
+    \ m0};\n}\n\n}  // namespace nt"
   dependsOn: []
   isVerificationFile: false
   path: lib/nt/modular.hpp
   requiredBy:
-  - lib/nt/mod-sqrt.hpp
+  - lib/nt/mod_sqrt.hpp
   - lib/nt/factorize.hpp
   - lib/nt/primitive_root.hpp
   - lib/nt/discrete_log.hpp
-  timestamp: '2026-10-17 15:06:39+09:00'
+  timestamp: '2026-10-17 16:01:29+09:00'
   verificationStatus: LIBRARY_ALL_AC
   verifiedWith:
+  - verify/nt/primitive_root.test.cpp
+  - verify/nt/sqrt_mod.test.cpp
   - verify/nt/factorize.test.cpp
 documentation_of: lib/nt/modular.hpp
 layout: document
