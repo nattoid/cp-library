@@ -1,4 +1,4 @@
-#define PROBLEM "https://judge.yosupo.jp/problem/discrete_logarithm"
+#define PROBLEM "https://judge.yosupo.jp/problem/discrete_logarithm_mod"
 #include <iostream>
 
 #include "../../lib/nt/discrete_log.hpp"
