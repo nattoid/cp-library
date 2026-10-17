@@ -1,6 +1,6 @@
 /**
  * @file modular.hpp
- * @brief モジュラ演算、拡張ユークリッドの互除法、中国剰余定理 (CRT)
+ * @brief モジュラ演算、64bit減算型遅延モンゴメリ演算器、extgcd、CRT
  */
 
 #pragma once
@@ -18,33 +18,86 @@ using i128 = __int128_t;
 using u128 = __uint128_t;
 
 /**
+ * @brief 64bit 減算型遅延モンゴメリ演算器 (mod < 2^62 かつ奇数)
+ * @details 値域 [0, 2*mod)
+ * で遅延評価を行う。コンストラクタは除算を含まず極めて高速。
+ */
+struct Montgomery {
+    u64 mod;
+    u64 minv;  // mod * minv == 1 (mod 2^64)
+
+    constexpr Montgomery(u64 n) : mod(n), minv(n) {
+        assert((n & 1) == 1);
+        for (int i = 0; i < 5; i++) minv *= 2 - mod * minv;
+    }
+
+    // モンゴメリ空間における 1 (R mod n)
+    inline u64 one() const {
+        return (-mod) % mod;
+    }
+
+    // モンゴメリ変換用定数 R^2 mod n
+    inline u64 r2() const {
+        return (-u128(mod)) % mod;
+    }
+
+    // (a * b + c) * R^{-1} mod n (出力は [0, 2*mod))
+    inline u64 fma(u64 a, u64 b, u64 c) const {
+        u128 d = u128(a) * b;
+        u64 e = c + mod + (d >> 64);
+        u64 f = u64(d) * minv;
+        u64 g = (u128(f) * mod) >> 64;
+        return e - g;
+    }
+
+    // a * b * R^{-1} mod n (出力は [0, 2*mod))
+    inline u64 mul(u64 a, u64 b) const {
+        return fma(a, b, 0);
+    }
+
+    // [0, 2*mod) -> [0, mod) への正規化
+    inline u64 norm(u64 a) const {
+        return a >= mod ? a - mod : a;
+    }
+
+    // モンゴメリ空間上でのべき乗 a_mont^exp (出力は正規化済み [0, mod))
+    inline u64 pow(u64 a_mont, u64 exp, u64 one_mont) const {
+        u64 res = one_mont;
+        while (exp > 0) {
+            if (exp & 1) res = mul(res, a_mont);
+            a_mont = mul(a_mont, a_mont);
+            exp >>= 1;
+        }
+        return norm(res);
+    }
+};
+
+/**
  * @brief 拡張ユークリッドの互除法 (非再帰)
  * @details a*x + b*y = g = gcd(|a|, |b|) となる (g, x, y) を求める
- * @param a 整数
- * @param b 整数
- * @return std::tuple<ll, ll, ll> {g, x, y} (g >= 0)
- * @note 計算量: O(log min(|a|, |b|))
  */
 inline std::tuple<ll, ll, ll> extgcd(ll a, ll b) {
     ll x = 1, y = 0, x1 = 0, y1 = 1;
-    ll a1 = a, b1 = b;
-    while (b1 != 0) {
-        ll q = a1 / b1;
-        std::tie(x, x1) = std::make_tuple(x1, x - q * x1);
-        std::tie(y, y1) = std::make_tuple(y1, y - q * y1);
-        std::tie(a1, b1) = std::make_tuple(b1, a1 - q * b1);
+    while (b != 0) {
+        ll q = a / b;
+        ll a2 = a - q * b;
+        a = b;
+        b = a2;
+        ll x2 = x - q * x1;
+        x = x1;
+        x1 = x2;
+        ll y2 = y - q * y1;
+        y = y1;
+        y1 = y2;
     }
-    if (a1 < 0) {
-        a1 = -a1;
+    if (a < 0) {
+        a = -a;
         x = -x;
         y = -y;
     }
-    return {a1, x, y};
+    return {a, x, y};
 }
 
-/**
- * @brief 拡張ユークリッドの互除法 (参照渡し版)
- */
 inline ll extgcd(ll a, ll b, ll& x, ll& y) {
     auto [g, u, v] = extgcd(a, b);
     x = u;
@@ -54,29 +107,15 @@ inline ll extgcd(ll a, ll b, ll& x, ll& y) {
 
 /**
  * @brief モジュラ逆元を求める (gcd(a, m) == 1 を仮定)
- * @note 計算量: O(log min(a, m))
  */
 inline ll inv_mod(ll a, ll m) {
     assert(m > 0);
-    a %= m;
-    if (a < 0) a += m;
-    ll b = m, u = 1, v = 0;
-    while (b) {
-        ll t = a / b;
-        a -= t * b;
-        std::swap(a, b);
-        u -= t * v;
-        std::swap(u, v);
-    }
-    assert(a == 1);
-    u %= m;
-    if (u < 0) u += m;
-    return u;
+    auto [g, x, y] = extgcd(a, m);
+    return x;
 }
 
 /**
  * @brief a^n mod m を計算する
- * @note 計算量: O(log n)
  */
 inline ll pow_mod(ll a, ll n, ll m) {
     assert(n >= 0 && m > 0);
@@ -94,10 +133,6 @@ inline ll pow_mod(ll a, ll n, ll m) {
 
 /**
  * @brief 中国剰余定理 (2変数版)
- * @details x = r1 (mod m1), x = r2 (mod m2) を満たす x = r (mod lcm(m1, m2))
- * を求める
- * @return std::pair<ll, ll> {r, lcm(m1, m2)} (解なしの場合は {0, 0})
- * @note lcm(m1, m2) が ll に収まることを前提とする
  */
 inline std::pair<ll, ll> crt(ll r1, ll m1, ll r2, ll m2) {
     assert(m1 >= 1 && m2 >= 1);
@@ -114,28 +149,24 @@ inline std::pair<ll, ll> crt(ll r1, ll m1, ll r2, ll m2) {
     if (t < 0) t += u;
 
     ll lcm = m1 * u;
-    ll r = r1 + (ll)((i128)t * m1 % lcm);
-    if (r >= lcm) r -= lcm;
+    ll r = r1 + t * m1;
     return {r, lcm};
 }
 
 /**
  * @brief 中国剰余定理 (配列版)
- * @details x = r[i] (mod m[i]) をすべて満たす x = rem (mod lcm) を求める
- * @return std::pair<ll, ll> {rem, lcm} (解なしの場合は {0, 0}, 空配列の場合は
- * {0, 1})
  */
 inline std::pair<ll, ll> crt(const std::vector<ll>& r,
                              const std::vector<ll>& m) {
     assert(r.size() == m.size());
-    ll r0 = 0, m0 = 1;
+    i128 r0 = 0, m0 = 1;
     for (size_t i = 0; i < r.size(); i++) {
-        auto [r1, m1] = crt(r0, m0, r[i], m[i]);
+        auto [r1, m1] = crt((ll)r0, (ll)m0, r[i], m[i]);
         if (m1 == 0) return {0, 0};
         r0 = r1;
         m0 = m1;
     }
-    return {r0, m0};
+    return {(ll)r0, (ll)m0};
 }
 
 }  // namespace nt

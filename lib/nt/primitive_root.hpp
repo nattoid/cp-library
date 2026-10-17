@@ -7,12 +7,49 @@
 #include <cassert>
 #include <cstdint>
 #include <numeric>
+#include <utility>
 #include <vector>
 
 #include "factorize.hpp"
 #include "modular.hpp"
 
 namespace nt {
+
+/**
+ * @brief 法 m における a の乗法位数 ord_m(a) を求める (前計算利用版)
+ * @param a 底
+ * @param m 法 (m >= 1)
+ * @param phi_m オイラーのφ関数値 phi(m)
+ * @param phi_factors phi(m) の素因数分解リスト
+ * @return ll a^k = 1 (mod m) を満たす最小の正整数 k (gcd(a, m) != 1 の場合は 0)
+ */
+inline ll order(ll a, ll m, ll phi_m,
+                const std::vector<std::pair<ll, int>>& phi_factors) {
+    assert(m >= 1);
+    if (m == 1) return 1;
+    a %= m;
+    if (a < 0) a += m;
+    if (std::gcd(a, m) != 1) return 0;
+
+    ll res = phi_m;
+    if (m & 1) {
+        Montgomery mont(m);
+        u64 one = mont.one();
+        u64 a_mont = mont.mul(a, mont.r2());
+        for (const auto& [p, e] : phi_factors) {
+            while (res % p == 0 && mont.pow(a_mont, res / p, one) == one) {
+                res /= p;
+            }
+        }
+    } else {
+        for (const auto& [p, e] : phi_factors) {
+            while (res % p == 0 && pow_mod(a, res / p, m) == 1) {
+                res /= p;
+            }
+        }
+    }
+    return res;
+}
 
 /**
  * @brief 法 m における a の乗法位数 ord_m(a) を求める
@@ -29,14 +66,8 @@ inline ll order(ll a, ll m) {
     if (std::gcd(a, m) != 1) return 0;
 
     ll phi_m = phi(m);
-    auto factors = factorize(phi_m);
-    ll res = phi_m;
-    for (const auto& [p, e] : factors) {
-        while (res % p == 0 && pow_mod(a, res / p, m) == 1) {
-            res /= p;
-        }
-    }
-    return res;
+    auto phi_factors = factorize(phi_m);
+    return order(a, m, phi_m, phi_factors);
 }
 
 /**
@@ -58,26 +89,15 @@ inline ll primitive_root_prime(ll p) {
         exps.push_back((p - 1) / q);
     }
 
-    internal::u64 n = p;
-    internal::Montgomery m(n);
-    internal::u64 one = (-n) % n;
-    internal::u64 r2 = (-internal::u128(n)) % n;
+    Montgomery m(p);
+    u64 one = m.one();
+    u64 r2 = m.r2();
 
-    auto mod_pow_mont = [&](internal::u64 a_mont, internal::u64 exp) {
-        internal::u64 res = one;
-        while (exp > 0) {
-            if (exp & 1) res = m.mul(res, a_mont);
-            a_mont = m.mul(a_mont, a_mont);
-            exp >>= 1;
-        }
-        return res >= n ? res - n : res;
-    };
-
-    for (internal::u64 g = 2;; g++) {
-        internal::u64 g_mont = m.mul(g, r2);
+    for (u64 g = 2;; g++) {
+        u64 g_mont = m.mul(g, r2);
         bool ok = true;
-        for (internal::u64 exp : exps) {
-            if (mod_pow_mont(g_mont, exp) == one) {
+        for (u64 exp : exps) {
+            if (m.pow(g_mont, exp, one) == one) {
                 ok = false;
                 break;
             }
@@ -103,21 +123,22 @@ inline ll primitive_root(ll n) {
 
     // 原始根の存在判定: n = p^k または 2*p^k (pは奇素数)
     ll m = n;
-    if (m % 2 == 0) {
-        m /= 2;
-        if (m % 2 == 0) return -1;  // 4より大きい4の倍数は原始根を持たない
+    if ((m & 1) == 0) {
+        m >>= 1;
+        if ((m & 1) == 0) return -1;  // 4より大きい4の倍数は原始根を持たない
     }
 
     auto factors_m = factorize(m);
-    if (factors_m.size() != 1)
+    if (factors_m.size() != 1) {
         return -1;  // 異なる2つ以上の奇素数で割れる場合は存在しない
+    }
 
     ll p = factors_m[0].first;
     ll phi_n = (m / p) * (p - 1);
 
     // phi(n) の素因数リストを作成 (p と p-1 の素因数)
     auto factors_phi = factorize(p - 1);
-    std::vector<ll> exps;
+    std::vector<u64> exps;
     exps.reserve(factors_phi.size() + 1);
     if (factors_m[0].second >= 2) {
         exps.push_back(phi_n / p);
@@ -126,16 +147,37 @@ inline ll primitive_root(ll n) {
         exps.push_back(phi_n / q);
     }
 
-    for (ll g = 2;; g++) {
-        if (std::gcd(g, n) != 1) continue;
-        bool ok = true;
-        for (ll exp : exps) {
-            if (pow_mod(g, exp, n) == 1) {
-                ok = false;
-                break;
+    if (n & 1) {
+        // n = p^k の場合は奇数なのでモンゴメリ乗算が使える
+        Montgomery mont(n);
+        u64 one = mont.one();
+        u64 r2 = mont.r2();
+        for (u64 g = 2;; g++) {
+            if (g % p == 0) continue;
+            u64 g_mont = mont.mul(g, r2);
+            bool ok = true;
+            for (u64 exp : exps) {
+                if (mont.pow(g_mont, exp, one) == one) {
+                    ok = false;
+                    break;
+                }
             }
+            if (ok) return g;
         }
-        if (ok) return g;
+    } else {
+        // n = 2*p^k の場合
+        for (ll g = 3;;
+             g += 2) {  // gcd(g, 2*p^k) == 1 より g は奇数のみ探索すればよい
+            if (g % p == 0) continue;
+            bool ok = true;
+            for (u64 exp : exps) {
+                if (pow_mod(g, exp, n) == 1) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) return g;
+        }
     }
 }
 

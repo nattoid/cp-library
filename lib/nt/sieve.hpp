@@ -77,16 +77,24 @@ struct LinearSieve {
 // 0 から max_n までのオイラーの φ 関数テーブル: O(N log log N)
 inline std::vector<int> phi_table(int max_n) {
     assert(max_n >= 0);
-    std::vector<int> res(max_n + 1);
-    for (int i = 0; i <= max_n; i++) res[i] = i;
+    std::vector<int> phi(max_n + 1, 0), primes;
+    if (max_n >= 1) phi[1] = 1;
     for (int i = 2; i <= max_n; i++) {
-        if (res[i] == i) {
-            for (int j = i; j <= max_n; j += i) {
-                res[j] -= res[j] / i;
+        if (phi[i] == 0) {
+            phi[i] = i - 1;
+            primes.push_back(i);
+        }
+        for (int p : primes) {
+            if (1LL * i * p > max_n) break;
+            if (i % p == 0) {
+                phi[i * p] = phi[i] * p;
+                break;
+            } else {
+                phi[i * p] = phi[i] * (p - 1);
             }
         }
     }
-    return res;
+    return phi;
 }
 
 // 0 から max_n までのメビウス関数 μ(n) テーブル: O(N)
@@ -102,7 +110,7 @@ inline std::vector<int> mobius_table(int max_n) {
             mu[i] = -1;
         }
         for (int p : primes) {
-            if (i * p > max_n) break;
+            if (1LL * i * p > max_n) break;
             is_comp[i * p] = true;
             if (i % p == 0) {
                 mu[i * p] = 0;
