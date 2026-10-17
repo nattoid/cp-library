@@ -88,7 +88,7 @@ data:
     - icon: ':x:'
       path: lib/nt/discrete_log.hpp
       title: "\u96E2\u6563\u5BFE\u6570\u554F\u984C (Extended Baby-step Giant-step)"
-    - icon: ':question:'
+    - icon: ':heavy_check_mark:'
       path: lib/nt/factorize.hpp
       title: lib/nt/factorize.hpp
     - icon: ':heavy_check_mark:'
@@ -157,7 +157,7 @@ data:
     - icon: ':heavy_check_mark:'
       path: verify/nt/factorize.test.cpp
       title: verify/nt/factorize.test.cpp
-    - icon: ':x:'
+    - icon: ':heavy_check_mark:'
       path: verify/nt/primality_test.test.cpp
       title: verify/nt/primality_test.test.cpp
     - icon: ':heavy_check_mark:'
