@@ -9,9 +9,6 @@ data:
     path: lib/fps/fps-circular.hpp
     title: "\u4E09\u89D2\u95A2\u6570"
   - icon: ':warning:'
-    path: lib/fps/fps-sqrt.hpp
-    title: "\u5E73\u65B9\u6839"
-  - icon: ':warning:'
     path: lib/fps/mod-pow.hpp
     title: Mod-Pow ($f(x)^k \mod g(x)$)
   - icon: ':warning:'
@@ -197,7 +194,6 @@ data:
   - lib/fps/taylor-shift.hpp
   - lib/fps/ntt-friendly-fps.hpp
   - lib/fps/mod-pow.hpp
-  - lib/fps/fps-sqrt.hpp
   - lib/fps/arbitrary-fps.hpp
   - lib/fps/fps-circular.hpp
   timestamp: '2026-10-16 16:16:24+09:00'

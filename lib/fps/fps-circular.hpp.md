@@ -94,85 +94,89 @@ data:
     \ inv(int deg = -1) const;\n    FPS exp(int deg = -1) const;\n};\ntemplate <typename\
     \ mint>\nvoid* FormalPowerSeries<mint>::ntt_ptr = nullptr;\n\n/**\n * @brief \u591A\
     \u9805\u5F0F/\u5F62\u5F0F\u7684\u51AA\u7D1A\u6570\u30E9\u30A4\u30D6\u30E9\u30EA\
-    \n */\n#line 2 \"lib/modint/montgomery-modint.hpp\"\n\ntemplate <uint32_t mod>\n\
-    struct LazyMontgomeryModInt {\n  using mint = LazyMontgomeryModInt;\n  using i32\
-    \ = int32_t;\n  using u32 = uint32_t;\n  using u64 = uint64_t;\n\n  static constexpr\
-    \ u32 get_r() {\n    u32 ret = mod;\n    for (i32 i = 0; i < 4; ++i) ret *= 2\
-    \ - mod * ret;\n    return ret;\n  }\n\n  static constexpr u32 r = get_r();\n\
-    \  static constexpr u32 n2 = -u64(mod) % mod;\n  static_assert(mod < (1 << 30),\
-    \ \"invalid, mod >= 2 ^ 30\");\n  static_assert((mod & 1) == 1, \"invalid, mod\
-    \ % 2 == 0\");\n  static_assert(r * mod == 1, \"this code has bugs.\");\n\n  u32\
-    \ a;\n\n  constexpr LazyMontgomeryModInt() : a(0) {}\n  constexpr LazyMontgomeryModInt(const\
-    \ int64_t &b)\n      : a(reduce(u64(b % mod + mod) * n2)){};\n\n  static constexpr\
-    \ u32 reduce(const u64 &b) {\n    return (b + u64(u32(b) * u32(-r)) * mod) >>\
-    \ 32;\n  }\n\n  constexpr mint &operator+=(const mint &b) {\n    if (i32(a +=\
-    \ b.a - 2 * mod) < 0) a += 2 * mod;\n    return *this;\n  }\n\n  constexpr mint\
-    \ &operator-=(const mint &b) {\n    if (i32(a -= b.a) < 0) a += 2 * mod;\n   \
-    \ return *this;\n  }\n\n  constexpr mint &operator*=(const mint &b) {\n    a =\
-    \ reduce(u64(a) * b.a);\n    return *this;\n  }\n\n  constexpr mint &operator/=(const\
-    \ mint &b) {\n    *this *= b.inverse();\n    return *this;\n  }\n\n  constexpr\
-    \ mint operator+(const mint &b) const { return mint(*this) += b; }\n  constexpr\
-    \ mint operator-(const mint &b) const { return mint(*this) -= b; }\n  constexpr\
-    \ mint operator*(const mint &b) const { return mint(*this) *= b; }\n  constexpr\
-    \ mint operator/(const mint &b) const { return mint(*this) /= b; }\n  constexpr\
-    \ bool operator==(const mint &b) const {\n    return (a >= mod ? a - mod : a)\
-    \ == (b.a >= mod ? b.a - mod : b.a);\n  }\n  constexpr bool operator!=(const mint\
-    \ &b) const {\n    return (a >= mod ? a - mod : a) != (b.a >= mod ? b.a - mod\
-    \ : b.a);\n  }\n  constexpr mint operator-() const { return mint() - mint(*this);\
-    \ }\n  constexpr mint operator+() const { return mint(*this); }\n\n  constexpr\
-    \ mint pow(u64 n) const {\n    mint ret(1), mul(*this);\n    while (n > 0) {\n\
-    \      if (n & 1) ret *= mul;\n      mul *= mul;\n      n >>= 1;\n    }\n    return\
-    \ ret;\n  }\n\n  constexpr mint inverse() const {\n    int x = get(), y = mod,\
-    \ u = 1, v = 0, t = 0, tmp = 0;\n    while (y > 0) {\n      t = x / y;\n     \
-    \ x -= t * y, u -= t * v;\n      tmp = x, x = y, y = tmp;\n      tmp = u, u =\
-    \ v, v = tmp;\n    }\n    return mint{u};\n  }\n\n  friend std::ostream &operator<<(std::ostream\
-    \ &os, const mint &b) {\n    return os << b.get();\n  }\n\n  friend std::istream\
-    \ &operator>>(std::istream &is, mint &b) {\n    int64_t t;\n    is >> t;\n   \
-    \ b = LazyMontgomeryModInt<mod>(t);\n    return (is);\n  }\n\n  constexpr u32\
-    \ get() const {\n    u32 ret = reduce(a);\n    return ret >= mod ? ret - mod :\
-    \ ret;\n  }\n\n  static constexpr u32 get_mod() { return mod; }\n};\n#line 4 \"\
-    lib/fps/fps-circular.hpp\"\n\ntemplate <typename mint>\nstd::pair<FormalPowerSeries<mint>,\
-    \ FormalPowerSeries<mint>> circular(\n    const FormalPowerSeries<mint>& fre,\
-    \ const FormalPowerSeries<mint>& fim,\n    int deg = -1) {\n    using fps = FormalPowerSeries<mint>;\n\
-    \    assert(fre.size() == 0 || fre[0] == mint(0));\n    assert(fim.size() == 0\
-    \ || fim[0] == mint(0));\n    if (deg == -1) deg = (int)std::max(fre.size(), fim.size());\n\
-    \    fps re({mint(1)}), im({mint(0)});\n\n    fps::set_fft();\n    if (fps::ntt_ptr\
-    \ == nullptr) {\n        for (int i = 1; i < deg; i <<= 1) {\n            fps\
-    \ dre = re.diff();\n            fps dim = im.diff();\n            fps fhypot =\
-    \ (re * re + im * im).inv(i << 1);\n            fps ere = dre * re + dim * im;\n\
-    \            fps eim = dim * re - dre * im;\n            fps logre = (ere * fhypot).pre((i\
-    \ << 1) - 1).integral();\n            fps logim = (eim * fhypot).pre((i << 1)\
-    \ - 1).integral();\n            fps gre = (-logre) + mint(1) - fim.pre(i << 1);\n\
-    \            fps gim = (-logim) + fre.pre(i << 1);\n            fps hre = (re\
-    \ * gre - im * gim).pre(i << 1);\n            fps him = (re * gim + im * gre).pre(i\
-    \ << 1);\n            std::swap(re, hre);\n            std::swap(im, him);\n \
-    \       }\n    } else {\n        for (int i = 1; i < deg; i <<= 1) {\n       \
-    \     fps dre = re.diff();\n            fps dim = im.diff();\n            re.resize(i\
-    \ << 1);\n            im.resize(i << 1);\n            dre.resize(i << 1);\n  \
-    \          dim.resize(i << 1);\n            re.ntt();\n            im.ntt();\n\
-    \            dre.ntt();\n            dim.ntt();\n            fps fhypot(i << 1),\
-    \ ere(i << 1), eim(i << 1);\n            for (int j = 0; j < 2 * i; j++) {\n \
-    \               fhypot[j] = re[j] * re[j] + im[j] * im[j];\n                ere[j]\
-    \ = dre[j] * re[j] + dim[j] * im[j];\n                eim[j] = dim[j] * re[j]\
-    \ - dre[j] * im[j];\n            }\n            fhypot.intt();\n            fhypot\
-    \ = fhypot.inv(i << 1);\n            fhypot.resize(i << 2);\n            fhypot.ntt();\n\
-    \            ere.ntt_doubling();\n            eim.ntt_doubling();\n          \
-    \  fps logre(i << 2), logim(i << 2);\n            for (int j = 0; j < 4 * i; j++)\
-    \ {\n                logre[j] = ere[j] * fhypot[j];\n                logim[j]\
-    \ = eim[j] * fhypot[j];\n            }\n            logre.intt();\n          \
-    \  logim.intt();\n            logre = logre.pre((i << 1) - 1).integral();\n  \
-    \          logim = logim.pre((i << 1) - 1).integral();\n            fps gre =\
-    \ (-logre) + mint(1) - fim.pre(i << 1);\n            fps gim = (-logim) + fre.pre(i\
-    \ << 1);\n            gre.resize(i << 2);\n            gim.resize(i << 2);\n \
-    \           gre.ntt();\n            gim.ntt();\n            re.ntt_doubling();\n\
-    \            im.ntt_doubling();\n            fps hre(i << 2), him(i << 2);\n \
-    \           for (int j = 0; j < 4 * i; j++) {\n                hre[j] = re[j]\
-    \ * gre[j] - im[j] * gim[j];\n                him[j] = re[j] * gim[j] + im[j]\
-    \ * gre[j];\n            }\n            hre.intt();\n            him.intt();\n\
-    \            hre = hre.pre(i << 1);\n            him = him.pre(i << 1);\n    \
-    \        std::swap(re, hre);\n            std::swap(im, him);\n        }\n   \
-    \ }\n    return std::make_pair(re.pre(deg), im.pre(deg));\n}\n\n/**\n * @brief\
-    \ \u4E09\u89D2\u95A2\u6570\n */\n"
+    \n */\n#line 3 \"lib/modint/montgomery-modint.hpp\"\n\ntemplate <uint32_t mod>\n\
+    struct LazyMontgomeryModInt {\n    using mint = LazyMontgomeryModInt;\n    using\
+    \ i32 = int32_t;\n    using u32 = uint32_t;\n    using u64 = uint64_t;\n\n   \
+    \ static constexpr u32 get_r() {\n        u32 ret = mod;\n        for (i32 i =\
+    \ 0; i < 4; ++i) ret *= 2 - mod * ret;\n        return ret;\n    }\n\n    static\
+    \ constexpr u32 r = get_r();\n    static constexpr u32 n2 = -u64(mod) % mod;\n\
+    \    static_assert(mod < (1 << 30), \"invalid, mod >= 2 ^ 30\");\n    static_assert((mod\
+    \ & 1) == 1, \"invalid, mod % 2 == 0\");\n    static_assert(r * mod == 1, \"this\
+    \ code has bugs.\");\n\n    u32 a;\n\n    constexpr LazyMontgomeryModInt() : a(0)\
+    \ {\n    }\n    constexpr LazyMontgomeryModInt(const int64_t& b)\n        : a(reduce(u64(b\
+    \ % mod + mod) * n2)) {};\n\n    static constexpr u32 reduce(const u64& b) {\n\
+    \        return (b + u64(u32(b) * u32(-r)) * mod) >> 32;\n    }\n\n    constexpr\
+    \ mint& operator+=(const mint& b) {\n        if (i32(a += b.a - 2 * mod) < 0)\
+    \ a += 2 * mod;\n        return *this;\n    }\n\n    constexpr mint& operator-=(const\
+    \ mint& b) {\n        if (i32(a -= b.a) < 0) a += 2 * mod;\n        return *this;\n\
+    \    }\n\n    constexpr mint& operator*=(const mint& b) {\n        a = reduce(u64(a)\
+    \ * b.a);\n        return *this;\n    }\n\n    constexpr mint& operator/=(const\
+    \ mint& b) {\n        *this *= b.inverse();\n        return *this;\n    }\n\n\
+    \    constexpr mint operator+(const mint& b) const {\n        return mint(*this)\
+    \ += b;\n    }\n    constexpr mint operator-(const mint& b) const {\n        return\
+    \ mint(*this) -= b;\n    }\n    constexpr mint operator*(const mint& b) const\
+    \ {\n        return mint(*this) *= b;\n    }\n    constexpr mint operator/(const\
+    \ mint& b) const {\n        return mint(*this) /= b;\n    }\n    constexpr bool\
+    \ operator==(const mint& b) const {\n        return (a >= mod ? a - mod : a) ==\
+    \ (b.a >= mod ? b.a - mod : b.a);\n    }\n    constexpr bool operator!=(const\
+    \ mint& b) const {\n        return (a >= mod ? a - mod : a) != (b.a >= mod ? b.a\
+    \ - mod : b.a);\n    }\n    constexpr mint operator-() const {\n        return\
+    \ mint() - mint(*this);\n    }\n    constexpr mint operator+() const {\n     \
+    \   return mint(*this);\n    }\n\n    constexpr mint pow(u64 n) const {\n    \
+    \    mint ret(1), mul(*this);\n        while (n > 0) {\n            if (n & 1)\
+    \ ret *= mul;\n            mul *= mul;\n            n >>= 1;\n        }\n    \
+    \    return ret;\n    }\n\n    constexpr mint inverse() const {\n        int x\
+    \ = get(), y = mod, u = 1, v = 0, t = 0, tmp = 0;\n        while (y > 0) {\n \
+    \           t = x / y;\n            x -= t * y, u -= t * v;\n            tmp =\
+    \ x, x = y, y = tmp;\n            tmp = u, u = v, v = tmp;\n        }\n      \
+    \  return mint{u};\n    }\n\n    friend std::ostream& operator<<(std::ostream&\
+    \ os, const mint& b) {\n        return os << b.get();\n    }\n\n    friend std::istream&\
+    \ operator>>(std::istream& is, mint& b) {\n        int64_t t;\n        is >> t;\n\
+    \        b = LazyMontgomeryModInt<mod>(t);\n        return (is);\n    }\n\n  \
+    \  constexpr u32 get() const {\n        u32 ret = reduce(a);\n        return ret\
+    \ >= mod ? ret - mod : ret;\n    }\n\n    static constexpr u32 get_mod() {\n \
+    \       return mod;\n    }\n};\n#line 4 \"lib/fps/fps-circular.hpp\"\n\ntemplate\
+    \ <typename mint>\nstd::pair<FormalPowerSeries<mint>, FormalPowerSeries<mint>>\
+    \ circular(\n    const FormalPowerSeries<mint>& fre, const FormalPowerSeries<mint>&\
+    \ fim,\n    int deg = -1) {\n    using fps = FormalPowerSeries<mint>;\n    assert(fre.size()\
+    \ == 0 || fre[0] == mint(0));\n    assert(fim.size() == 0 || fim[0] == mint(0));\n\
+    \    if (deg == -1) deg = (int)std::max(fre.size(), fim.size());\n    fps re({mint(1)}),\
+    \ im({mint(0)});\n\n    fps::set_fft();\n    if (fps::ntt_ptr == nullptr) {\n\
+    \        for (int i = 1; i < deg; i <<= 1) {\n            fps dre = re.diff();\n\
+    \            fps dim = im.diff();\n            fps fhypot = (re * re + im * im).inv(i\
+    \ << 1);\n            fps ere = dre * re + dim * im;\n            fps eim = dim\
+    \ * re - dre * im;\n            fps logre = (ere * fhypot).pre((i << 1) - 1).integral();\n\
+    \            fps logim = (eim * fhypot).pre((i << 1) - 1).integral();\n      \
+    \      fps gre = (-logre) + mint(1) - fim.pre(i << 1);\n            fps gim =\
+    \ (-logim) + fre.pre(i << 1);\n            fps hre = (re * gre - im * gim).pre(i\
+    \ << 1);\n            fps him = (re * gim + im * gre).pre(i << 1);\n         \
+    \   std::swap(re, hre);\n            std::swap(im, him);\n        }\n    } else\
+    \ {\n        for (int i = 1; i < deg; i <<= 1) {\n            fps dre = re.diff();\n\
+    \            fps dim = im.diff();\n            re.resize(i << 1);\n          \
+    \  im.resize(i << 1);\n            dre.resize(i << 1);\n            dim.resize(i\
+    \ << 1);\n            re.ntt();\n            im.ntt();\n            dre.ntt();\n\
+    \            dim.ntt();\n            fps fhypot(i << 1), ere(i << 1), eim(i <<\
+    \ 1);\n            for (int j = 0; j < 2 * i; j++) {\n                fhypot[j]\
+    \ = re[j] * re[j] + im[j] * im[j];\n                ere[j] = dre[j] * re[j] +\
+    \ dim[j] * im[j];\n                eim[j] = dim[j] * re[j] - dre[j] * im[j];\n\
+    \            }\n            fhypot.intt();\n            fhypot = fhypot.inv(i\
+    \ << 1);\n            fhypot.resize(i << 2);\n            fhypot.ntt();\n    \
+    \        ere.ntt_doubling();\n            eim.ntt_doubling();\n            fps\
+    \ logre(i << 2), logim(i << 2);\n            for (int j = 0; j < 4 * i; j++) {\n\
+    \                logre[j] = ere[j] * fhypot[j];\n                logim[j] = eim[j]\
+    \ * fhypot[j];\n            }\n            logre.intt();\n            logim.intt();\n\
+    \            logre = logre.pre((i << 1) - 1).integral();\n            logim =\
+    \ logim.pre((i << 1) - 1).integral();\n            fps gre = (-logre) + mint(1)\
+    \ - fim.pre(i << 1);\n            fps gim = (-logim) + fre.pre(i << 1);\n    \
+    \        gre.resize(i << 2);\n            gim.resize(i << 2);\n            gre.ntt();\n\
+    \            gim.ntt();\n            re.ntt_doubling();\n            im.ntt_doubling();\n\
+    \            fps hre(i << 2), him(i << 2);\n            for (int j = 0; j < 4\
+    \ * i; j++) {\n                hre[j] = re[j] * gre[j] - im[j] * gim[j];\n   \
+    \             him[j] = re[j] * gim[j] + im[j] * gre[j];\n            }\n     \
+    \       hre.intt();\n            him.intt();\n            hre = hre.pre(i << 1);\n\
+    \            him = him.pre(i << 1);\n            std::swap(re, hre);\n       \
+    \     std::swap(im, him);\n        }\n    }\n    return std::make_pair(re.pre(deg),\
+    \ im.pre(deg));\n}\n\n/**\n * @brief \u4E09\u89D2\u95A2\u6570\n */\n"
   code: "#pragma once\n#include \"../fps/formal-power-series.hpp\"\n#include \"../modint/montgomery-modint.hpp\"\
     \n\ntemplate <typename mint>\nstd::pair<FormalPowerSeries<mint>, FormalPowerSeries<mint>>\
     \ circular(\n    const FormalPowerSeries<mint>& fre, const FormalPowerSeries<mint>&\
@@ -221,7 +225,7 @@ data:
   isVerificationFile: false
   path: lib/fps/fps-circular.hpp
   requiredBy: []
-  timestamp: '2026-10-16 16:16:24+09:00'
+  timestamp: '2026-10-17 10:16:40+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []
 documentation_of: lib/fps/fps-circular.hpp

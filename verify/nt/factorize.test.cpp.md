@@ -6,7 +6,9 @@ data:
     title: lib/nt/factorize.hpp
   - icon: ':heavy_check_mark:'
     path: lib/nt/modular.hpp
-    title: lib/nt/modular.hpp
+    title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u3001\u62E1\u5F35\u30E6\u30FC\u30AF\
+      \u30EA\u30C3\u30C9\u306E\u4E92\u9664\u6CD5\u3001\u4E2D\u56FD\u5270\u4F59\u5B9A\
+      \u7406 (CRT)"
   _extendedRequiredBy: []
   _extendedVerifiedWith: []
   _isVerificationFailed: false
@@ -42,7 +44,7 @@ data:
   isVerificationFile: true
   path: verify/nt/factorize.test.cpp
   requiredBy: []
-  timestamp: '2026-10-16 15:35:25+09:00'
+  timestamp: '2026-10-17 10:16:40+09:00'
   verificationStatus: TEST_ACCEPTED
   verifiedWith: []
 documentation_of: verify/nt/factorize.test.cpp

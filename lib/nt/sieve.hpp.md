@@ -8,8 +8,8 @@ data:
   _verificationStatusIcon: ':warning:'
   attributes:
     links: []
-  bundledCode: "#line 2 \"lib/nt/sieve.hpp\"\n#include <vector>\n#include <utility>\n\
-    #include <algorithm>\n#include <cassert>\n\nnamespace nt {\n\n// \u7DDA\u5F62\u7BE9\
+  bundledCode: "#line 2 \"lib/nt/sieve.hpp\"\n#include <algorithm>\n#include <cassert>\n\
+    #include <utility>\n#include <vector>\n\nnamespace nt {\n\n// \u7DDA\u5F62\u7BE9\
     \u306B\u3088\u308B\u9AD8\u901F\u7D20\u56E0\u6570\u5206\u89E3\u30FB\u7D04\u6570\
     \u5217\u6319: \u524D\u51E6\u7406 O(N)\nstruct LinearSieve {\n    int max_n;\n\
     \    std::vector<int> spf;\n    std::vector<int> primes;\n\n    LinearSieve(int\
@@ -51,13 +51,9 @@ data:
     \ break;\n            is_comp[i * p] = true;\n            if (i % p == 0) {\n\
     \                mu[i * p] = 0;\n                break;\n            } else {\n\
     \                mu[i * p] = -mu[i];\n            }\n        }\n    }\n    return\
-    \ mu;\n}\n\n// 0 \u304B\u3089 max_n \u307E\u3067\u306E\u30E1\u30EB\u30C6\u30F3\
-    \u30B9\u95A2\u6570 M(n) = \u2211_{k=1}^n \u03BC(k) \u30C6\u30FC\u30D6\u30EB: O(N)\n\
-    inline std::vector<int> mertens_table(int max_n) {\n    auto m = mobius_table(max_n);\n\
-    \    for (int i = 1; i <= max_n; i++) {\n        m[i] += m[i - 1];\n    }\n  \
-    \  return m;\n}\n\n} // namespace nt\n"
-  code: "#pragma once\n#include <vector>\n#include <utility>\n#include <algorithm>\n\
-    #include <cassert>\n\nnamespace nt {\n\n// \u7DDA\u5F62\u7BE9\u306B\u3088\u308B\
+    \ mu;\n}\n\n}  // namespace nt\n"
+  code: "#pragma once\n#include <algorithm>\n#include <cassert>\n#include <utility>\n\
+    #include <vector>\n\nnamespace nt {\n\n// \u7DDA\u5F62\u7BE9\u306B\u3088\u308B\
     \u9AD8\u901F\u7D20\u56E0\u6570\u5206\u89E3\u30FB\u7D04\u6570\u5217\u6319: \u524D\
     \u51E6\u7406 O(N)\nstruct LinearSieve {\n    int max_n;\n    std::vector<int>\
     \ spf;\n    std::vector<int> primes;\n\n    LinearSieve(int n) : max_n(n), spf(n\
@@ -99,16 +95,12 @@ data:
     \ break;\n            is_comp[i * p] = true;\n            if (i % p == 0) {\n\
     \                mu[i * p] = 0;\n                break;\n            } else {\n\
     \                mu[i * p] = -mu[i];\n            }\n        }\n    }\n    return\
-    \ mu;\n}\n\n// 0 \u304B\u3089 max_n \u307E\u3067\u306E\u30E1\u30EB\u30C6\u30F3\
-    \u30B9\u95A2\u6570 M(n) = \u2211_{k=1}^n \u03BC(k) \u30C6\u30FC\u30D6\u30EB: O(N)\n\
-    inline std::vector<int> mertens_table(int max_n) {\n    auto m = mobius_table(max_n);\n\
-    \    for (int i = 1; i <= max_n; i++) {\n        m[i] += m[i - 1];\n    }\n  \
-    \  return m;\n}\n\n} // namespace nt"
+    \ mu;\n}\n\n}  // namespace nt"
   dependsOn: []
   isVerificationFile: false
   path: lib/nt/sieve.hpp
   requiredBy: []
-  timestamp: '2026-10-16 11:43:12+09:00'
+  timestamp: '2026-10-17 10:16:40+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []
 documentation_of: lib/nt/sieve.hpp

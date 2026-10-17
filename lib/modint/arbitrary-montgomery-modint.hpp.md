@@ -1,13 +1,7 @@
 ---
 data:
   _extendedDependsOn: []
-  _extendedRequiredBy:
-  - icon: ':warning:'
-    path: lib/fps/fps-sqrt.hpp
-    title: "\u5E73\u65B9\u6839"
-  - icon: ':warning:'
-    path: lib/modulo/mod-sqrt.hpp
-    title: mod sqrt(Tonelli-Shanks algorithm)
+  _extendedRequiredBy: []
   _extendedVerifiedWith: []
   _isVerificationFailed: false
   _pathExtension: hpp
@@ -98,9 +92,7 @@ data:
   dependsOn: []
   isVerificationFile: false
   path: lib/modint/arbitrary-montgomery-modint.hpp
-  requiredBy:
-  - lib/modulo/mod-sqrt.hpp
-  - lib/fps/fps-sqrt.hpp
+  requiredBy: []
   timestamp: '2026-10-16 11:43:12+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []

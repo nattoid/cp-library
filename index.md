@@ -83,22 +83,26 @@ data:
     - icon: ':warning:'
       path: lib/modint/montgomery-modint.hpp
       title: lib/modint/montgomery-modint.hpp
-  - name: lib/modulo
-    pages:
-    - icon: ':warning:'
-      path: lib/modulo/binomial.hpp
-      title: lib/modulo/binomial.hpp
-    - icon: ':warning:'
-      path: lib/modulo/mod-sqrt.hpp
-      title: mod sqrt(Tonelli-Shanks algorithm)
   - name: lib/nt
     pages:
+    - icon: ':warning:'
+      path: lib/nt/discrete_log.hpp
+      title: "\u96E2\u6563\u5BFE\u6570\u554F\u984C (Extended Baby-step Giant-step)"
     - icon: ':heavy_check_mark:'
       path: lib/nt/factorize.hpp
       title: lib/nt/factorize.hpp
+    - icon: ':warning:'
+      path: lib/nt/mod-sqrt.hpp
+      title: lib/nt/mod-sqrt.hpp
     - icon: ':heavy_check_mark:'
       path: lib/nt/modular.hpp
-      title: lib/nt/modular.hpp
+      title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u3001\u62E1\u5F35\u30E6\u30FC\u30AF\
+        \u30EA\u30C3\u30C9\u306E\u4E92\u9664\u6CD5\u3001\u4E2D\u56FD\u5270\u4F59\u5B9A\
+        \u7406 (CRT)"
+    - icon: ':warning:'
+      path: lib/nt/primitive_root.hpp
+      title: "\u4E57\u6CD5\u4F4D\u6570 (Order) \u3068\u539F\u59CB\u6839 (Primitive\
+        \ Root) \u306E\u63A2\u7D22"
     - icon: ':warning:'
       path: lib/nt/sieve.hpp
       title: lib/nt/sieve.hpp

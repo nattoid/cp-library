@@ -3,8 +3,14 @@ data:
   _extendedDependsOn:
   - icon: ':heavy_check_mark:'
     path: lib/nt/modular.hpp
-    title: lib/nt/modular.hpp
-  _extendedRequiredBy: []
+    title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u3001\u62E1\u5F35\u30E6\u30FC\u30AF\
+      \u30EA\u30C3\u30C9\u306E\u4E92\u9664\u6CD5\u3001\u4E2D\u56FD\u5270\u4F59\u5B9A\
+      \u7406 (CRT)"
+  _extendedRequiredBy:
+  - icon: ':warning:'
+    path: lib/nt/primitive_root.hpp
+    title: "\u4E57\u6CD5\u4F4D\u6570 (Order) \u3068\u539F\u59CB\u6839 (Primitive Root)\
+      \ \u306E\u63A2\u7D22"
   _extendedVerifiedWith:
   - icon: ':heavy_check_mark:'
     path: verify/nt/factorize.test.cpp
@@ -152,8 +158,9 @@ data:
   - lib/nt/modular.hpp
   isVerificationFile: false
   path: lib/nt/factorize.hpp
-  requiredBy: []
-  timestamp: '2026-10-16 15:35:25+09:00'
+  requiredBy:
+  - lib/nt/primitive_root.hpp
+  timestamp: '2026-10-17 10:16:40+09:00'
   verificationStatus: LIBRARY_ALL_AC
   verifiedWith:
   - verify/nt/factorize.test.cpp
