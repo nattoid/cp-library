@@ -1,18 +1,18 @@
 ---
 data:
   _extendedDependsOn:
-  - icon: ':x:'
+  - icon: ':heavy_check_mark:'
     path: lib/nt/discrete_log.hpp
     title: "\u96E2\u6563\u5BFE\u6570\u554F\u984C (Extended Baby-step Giant-step)"
-  - icon: ':question:'
+  - icon: ':heavy_check_mark:'
     path: lib/nt/modular.hpp
     title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u300164bit\u6E1B\u7B97\u578B\u9045\
       \u5EF6\u30E2\u30F3\u30B4\u30E1\u30EA\u6F14\u7B97\u5668\u3001extgcd\u3001CRT"
   _extendedRequiredBy: []
   _extendedVerifiedWith: []
-  _isVerificationFailed: true
+  _isVerificationFailed: false
   _pathExtension: cpp
-  _verificationStatusIcon: ':x:'
+  _verificationStatusIcon: ':heavy_check_mark:'
   attributes:
     '*NOT_SPECIAL_COMMENTS*': ''
     PROBLEM: https://judge.yosupo.jp/problem/discrete_logarithm_mod
@@ -123,16 +123,16 @@ data:
     \  k++;\n    }\n\n    // 2. c * a^{x - k} = b (mod m) \u3092 BSGS \u3067\u89E3\
     \u304F (gcd(a, m) == 1)\n    // x - k = i * step - j (1 <= i <= step, 0 <= j <\
     \ step) \u3068\u304A\u304F\n    // c * (a^step)^i = b * a^j (mod m)\n    ll step\
-    \ = std::sqrtl(m) + 1;\n    internal::FastHashMap mp(step);\n\n    ll cur = b;\n\
-    \    for (int j = 0; j < step; j++) {\n        mp.insert(cur, j);\n        cur\
-    \ = (ll)((u128)cur * a % m);\n    }\n\n    ll a_step = pow_mod(a, step, m);\n\
-    \    cur = c;\n    for (ll i = 1; i <= step; i++) {\n        cur = (ll)((u128)cur\
-    \ * a_step % m);\n        int j = mp.find(cur);\n        if (j != -1) {\n    \
-    \        return i * step - j + k;\n        }\n    }\n\n    return -1;\n}\n\n}\
-    \  // namespace nt\n#line 5 \"verify/nt/discrete_logarithm_mod.test.cpp\"\n\n\
-    using namespace std;\nusing ll = long long;\nint main() {\n    int q;\n    cin\
-    \ >> q;\n    while (q--) {\n        int x, y, m;\n        cin >> x >> y >> m;\n\
-    \        cout << nt::discrete_log(x, y, m) << \"\\n\";\n    }\n}\n"
+    \ = std::sqrt(static_cast<long double>(m)) + 1;\n    internal::FastHashMap mp(step);\n\
+    \n    ll cur = b;\n    for (int j = 0; j < step; j++) {\n        mp.insert(cur,\
+    \ j);\n        cur = (ll)((u128)cur * a % m);\n    }\n\n    ll a_step = pow_mod(a,\
+    \ step, m);\n    cur = c;\n    for (ll i = 1; i <= step; i++) {\n        cur =\
+    \ (ll)((u128)cur * a_step % m);\n        int j = mp.find(cur);\n        if (j\
+    \ != -1) {\n            return i * step - j + k;\n        }\n    }\n\n    return\
+    \ -1;\n}\n\n}  // namespace nt\n#line 5 \"verify/nt/discrete_logarithm_mod.test.cpp\"\
+    \n\nusing namespace std;\nusing ll = long long;\nint main() {\n    int q;\n  \
+    \  cin >> q;\n    while (q--) {\n        int x, y, m;\n        cin >> x >> y >>\
+    \ m;\n        cout << nt::discrete_log(x, y, m) << \"\\n\";\n    }\n}\n"
   code: "#define PROBLEM \"https://judge.yosupo.jp/problem/discrete_logarithm_mod\"\
     \n#include <iostream>\n\n#include \"../../lib/nt/discrete_log.hpp\"\n\nusing namespace\
     \ std;\nusing ll = long long;\nint main() {\n    int q;\n    cin >> q;\n    while\
@@ -144,8 +144,8 @@ data:
   isVerificationFile: true
   path: verify/nt/discrete_logarithm_mod.test.cpp
   requiredBy: []
-  timestamp: '2026-10-17 16:44:09+09:00'
-  verificationStatus: TEST_WRONG_ANSWER
+  timestamp: '2026-10-17 17:07:52+09:00'
+  verificationStatus: TEST_ACCEPTED
   verifiedWith: []
 documentation_of: verify/nt/discrete_logarithm_mod.test.cpp
 layout: document
