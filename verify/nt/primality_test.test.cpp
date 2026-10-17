@@ -11,6 +11,6 @@ int main() {
     while (q--) {
         ll n;
         cin >> n;
-        cout << nt::is_prime(n) << "\n";
+        cout << (nt::is_prime(n) ? "Yes\n" : "No\n");
     }
 }
