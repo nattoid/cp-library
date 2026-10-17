@@ -93,12 +93,11 @@ data:
       title: lib/nt/factorize.hpp
     - icon: ':warning:'
       path: lib/nt/mod-sqrt.hpp
-      title: lib/nt/mod-sqrt.hpp
+      title: "\u5E73\u65B9\u5270\u4F59 (Tonelli-Shanks algorithm)"
     - icon: ':heavy_check_mark:'
       path: lib/nt/modular.hpp
-      title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u3001\u62E1\u5F35\u30E6\u30FC\u30AF\
-        \u30EA\u30C3\u30C9\u306E\u4E92\u9664\u6CD5\u3001\u4E2D\u56FD\u5270\u4F59\u5B9A\
-        \u7406 (CRT)"
+      title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u300164bit\u6E1B\u7B97\u578B\u9045\
+        \u5EF6\u30E2\u30F3\u30B4\u30E1\u30EA\u6F14\u7B97\u5668\u3001extgcd\u3001CRT"
     - icon: ':warning:'
       path: lib/nt/primitive_root.hpp
       title: "\u4E57\u6CD5\u4F4D\u6570 (Order) \u3068\u539F\u59CB\u6839 (Primitive\

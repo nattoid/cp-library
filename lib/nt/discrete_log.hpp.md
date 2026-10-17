@@ -3,9 +3,8 @@ data:
   _extendedDependsOn:
   - icon: ':heavy_check_mark:'
     path: lib/nt/modular.hpp
-    title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u3001\u62E1\u5F35\u30E6\u30FC\u30AF\
-      \u30EA\u30C3\u30C9\u306E\u4E92\u9664\u6CD5\u3001\u4E2D\u56FD\u5270\u4F59\u5B9A\
-      \u7406 (CRT)"
+    title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u300164bit\u6E1B\u7B97\u578B\u9045\
+      \u5EF6\u30E2\u30F3\u30B4\u30E1\u30EA\u6F14\u7B97\u5668\u3001extgcd\u3001CRT"
   _extendedRequiredBy: []
   _extendedVerifiedWith: []
   _isVerificationFailed: false
@@ -58,26 +57,26 @@ data:
     \ 1) return 0;\n    if (a == 0) {\n        if (b == 0) return 1;\n        return\
     \ -1;\n    }\n\n    // 1. gcd(a, m) > 1 \u306E\u9593\u3001\u56E0\u5B50\u3092\u62EC\
     \u308A\u51FA\u3057\u3066\u4E92\u3044\u306B\u7D20\u306A\u554F\u984C\u306B\u5E30\
-    \u7740\u3055\u305B\u308B\n    ll k = 0, c = 1;\n    while (true) {\n        ll\
-    \ g = std::gcd(a, m);\n        if (g == 1) break;\n        if (b % g != 0) return\
-    \ -1;\n        b /= g;\n        m /= g;\n        c = (ll)((u128)c * (a / g) %\
-    \ m);\n        k++;\n        if (c == b) return k;\n    }\n\n    // 2. c * a^{x\
-    \ - k} = b (mod m) \u3092 BSGS \u3067\u89E3\u304F (gcd(a, m) == 1)\n    // x -\
-    \ k = i * step - j (1 <= i <= step, 0 <= j < step) \u3068\u304A\u304F\n    //\
-    \ c * (a^step)^i = b * a^j (mod m)\n    ll step = std::sqrt(m) + 1;\n    internal::FastHashMap\
-    \ mp(step);\n\n    ll cur = b;\n    for (int j = 0; j < step; j++) {\n       \
-    \ mp.insert(cur, j);\n        cur = (ll)((u128)cur * a % m);\n    }\n\n    ll\
-    \ a_step = pow_mod(a, step, m);\n    cur = c;\n    for (ll i = 1; i <= step; i++)\
-    \ {\n        cur = (ll)((u128)cur * a_step % m);\n        int j = mp.find(cur);\n\
-    \        if (j != -1) {\n            ll ans = i * step - j + k;\n            if\
-    \ (ans > 0 || allow_zero) return ans;\n        }\n    }\n\n    return -1;\n}\n\
-    \n}  // namespace nt"
+    \u7740\u3055\u305B\u308B\n    ll k = 0, c = 1 % m;\n    while (true) {\n     \
+    \   if ((allow_zero || k > 0) && c == b) return k;\n        ll g = std::gcd(a,\
+    \ m);\n        if (g == 1) break;\n        if (b % g != 0) return -1;\n      \
+    \  b /= g;\n        m /= g;\n        c = (ll)((u128)c * (a / g) % m);\n      \
+    \  k++;\n    }\n\n    // 2. c * a^{x - k} = b (mod m) \u3092 BSGS \u3067\u89E3\
+    \u304F (gcd(a, m) == 1)\n    // x - k = i * step - j (1 <= i <= step, 0 <= j <\
+    \ step) \u3068\u304A\u304F\n    // c * (a^step)^i = b * a^j (mod m)\n    ll step\
+    \ = std::sqrtl(m) + 1;\n    internal::FastHashMap mp(step);\n\n    ll cur = b;\n\
+    \    for (int j = 0; j < step; j++) {\n        mp.insert(cur, j);\n        cur\
+    \ = (ll)((u128)cur * a % m);\n    }\n\n    ll a_step = pow_mod(a, step, m);\n\
+    \    cur = c;\n    for (ll i = 1; i <= step; i++) {\n        cur = (ll)((u128)cur\
+    \ * a_step % m);\n        int j = mp.find(cur);\n        if (j != -1) {\n    \
+    \        ll ans = i * step - j + k;\n            if (ans > 0 || allow_zero) return\
+    \ ans;\n        }\n    }\n\n    return -1;\n}\n\n}  // namespace nt"
   dependsOn:
   - lib/nt/modular.hpp
   isVerificationFile: false
   path: lib/nt/discrete_log.hpp
   requiredBy: []
-  timestamp: '2026-10-17 10:16:40+09:00'
+  timestamp: '2026-10-17 15:06:39+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []
 documentation_of: lib/nt/discrete_log.hpp

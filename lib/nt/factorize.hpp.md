@@ -3,9 +3,8 @@ data:
   _extendedDependsOn:
   - icon: ':heavy_check_mark:'
     path: lib/nt/modular.hpp
-    title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u3001\u62E1\u5F35\u30E6\u30FC\u30AF\
-      \u30EA\u30C3\u30C9\u306E\u4E92\u9664\u6CD5\u3001\u4E2D\u56FD\u5270\u4F59\u5B9A\
-      \u7406 (CRT)"
+    title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u300164bit\u6E1B\u7B97\u578B\u9045\
+      \u5EF6\u30E2\u30F3\u30B4\u30E1\u30EA\u6F14\u7B97\u5668\u3001extgcd\u3001CRT"
   _extendedRequiredBy:
   - icon: ':warning:'
     path: lib/nt/primitive_root.hpp
@@ -40,100 +39,70 @@ data:
     \ * @see https://judge.yosupo.jp/submission/189742\n */\n\n#pragma once\n#include\
     \ <algorithm>\n#include <cassert>\n#include <cstdint>\n#include <utility>\n#include\
     \ <vector>\n\n#include \"modular.hpp\"\n\nnamespace nt {\n\n/** @cond INTERNAL\
-    \ */\nnamespace internal {\n\nusing u64 = uint64_t;\nusing u128 = __uint128_t;\n\
-    \n// Binary GCD (Stein's algorithm)\ninline u64 gcd_stein(u64 x, u64 y) {\n  \
-    \  if (x == 0) return y;\n    if (y == 0) return x;\n    int n = __builtin_ctzll(x);\n\
-    \    int m = __builtin_ctzll(y);\n    x >>= n;\n    y >>= m;\n    while (x !=\
-    \ y) {\n        int s = __builtin_ctzll(x - y);\n        bool f = x > y;\n   \
-    \     u64 max_v = f ? x : y;\n        y = f ? y : x;\n        x = (max_v - y)\
-    \ >> s;\n    }\n    return x << (n < m ? n : m);\n}\n\n// 64bit \u6E1B\u7B97\u578B\
-    \u9045\u5EF6\u30E2\u30F3\u30B4\u30E1\u30EA\u6F14\u7B97\u5668 (mod < 2^62 \u304B\
-    \u3064\u5947\u6570)\nstruct Montgomery {\n    u64 mod;\n    u64 minv;  // mod\
-    \ * minv == 1 (mod 2^64)\n\n    Montgomery(u64 n) : mod(n), minv(n) {\n      \
-    \  for (int i = 0; i < 5; i++) minv *= 2 - mod * minv;\n    }\n\n    inline u64\
-    \ fma(u64 a, u64 b, u64 c) const {\n        u128 d = u128(a) * b;\n        u64\
-    \ e = c + mod + (d >> 64);\n        u64 f = u64(d) * minv;\n        u64 g = (u128(f)\
-    \ * mod) >> 64;\n        return e - g;\n    }\n\n    inline u64 mul(u64 a, u64\
-    \ b) const {\n        return fma(a, b, 0);\n    }\n};\n\n}  // namespace internal\n\
-    /** @endcond */\n\n/**\n * @brief Miller-Rabin\u7D20\u6570\u5224\u5B9A\u6CD5 (\u30E2\
-    \u30F3\u30B4\u30E1\u30EA\u4E57\u7B97\u7248)\n * @param n_ \u5224\u5B9A\u3059\u308B\
-    \u6574\u6570\n * @return true \u7D20\u6570\u3067\u3042\u308B\n * @return false\
-    \ \u5408\u6210\u6570\u3067\u3042\u308B\u3001\u307E\u305F\u306F1\u4EE5\u4E0B\n\
-    \ * @note \u8A08\u7B97\u91CF: O(log N)\n */\ninline bool is_prime(ll n_) {\n \
-    \   if (n_ <= 1) return false;\n    internal::u64 n = n_;\n    if (n == 2 || n\
-    \ == 3 || n == 5 || n == 7) return true;\n    if (n % 2 == 0 || n % 3 == 0 ||\
-    \ n % 5 == 0 || n % 7 == 0) return false;\n\n    internal::Montgomery m(n);\n\
-    \    internal::u64 d = n - 1;\n    int s = __builtin_ctzll(d);\n    d >>= s;\n\
-    \n    // \u30E2\u30F3\u30B4\u30E1\u30EA\u7A7A\u9593\u306B\u304A\u3051\u308B 1\
-    \ \u3068 n - 1\u3001\u304A\u3088\u3073\u5909\u63DB\u7528\u5B9A\u6570 R^2 mod n\n\
-    \    internal::u64 one = (-n) % n;\n    internal::u64 minus_one = n - one;\n \
-    \   internal::u64 r2 = (-internal::u128(n)) % n;\n\n    auto mod_pow_mont = [&](internal::u64\
-    \ a_mont, internal::u64 exp) {\n        internal::u64 res = one;\n        while\
-    \ (exp > 0) {\n            if (exp & 1) res = m.mul(res, a_mont);\n          \
-    \  a_mont = m.mul(a_mont, a_mont);\n            exp >>= 1;\n        }\n      \
-    \  return res >= n ? res - n : res;\n    };\n\n    auto check = [&](const auto&\
-    \ bases) {\n        for (internal::u64 a : bases) {\n            if (n <= a) break;\n\
-    \            internal::u64 a_mont = m.mul(a, r2);\n            internal::u64 x\
-    \ = mod_pow_mont(a_mont, d);\n            if (x == one || x == minus_one) continue;\n\
-    \            bool composite = true;\n            for (int r = 1; r < s; r++) {\n\
-    \                x = m.mul(x, x);\n                if (x >= n) x -= n;\n     \
-    \           if (x == one) return false;\n                if (x == minus_one) {\n\
-    \                    composite = false;\n                    break;\n        \
-    \        }\n            }\n            if (composite) return false;\n        }\n\
-    \        return true;\n    };\n\n    if (n < 4759123141ULL) {\n        static\
-    \ constexpr internal::u64 bases_small[] = {2, 7, 61};\n        return check(bases_small);\n\
-    \    } else {\n        static constexpr internal::u64 bases_large[] = {\n    \
-    \        2, 325, 9375, 28178, 450775, 9780504, 1795265022};\n        return check(bases_large);\n\
-    \    }\n}\n\n/**\n * @brief Pollard's rho\u30A2\u30EB\u30B4\u30EA\u30BA\u30E0\u306B\
-    \u3088\u308B\u7D20\u56E0\u6570\u63A2\u7D22\n * @param n_ \u7D20\u56E0\u6570\u3092\
-    \u63A2\u3059\u5BFE\u8C61\u306E\u6574\u6570 (\u5408\u6210\u6570\u3067\u3042\u308B\
-    \u3053\u3068\u3092\u524D\u63D0\u3068\u3059\u308B)\n * @return ll \u898B\u3064\u304B\
-    \u3063\u305F\u7D20\u56E0\u6570 (n_ \u306E\u975E\u81EA\u660E\u306A\u7D04\u6570\
-    )\n * @note \u8A08\u7B97\u91CF: \u671F\u5F85\u5024 O(N^{1/4})\n */\ninline ll\
-    \ pollard_rho(ll n_) {\n    assert(n_ > 1);\n    internal::u64 n = n_;\n    if\
-    \ (n % 2 == 0) return 2;\n    if (is_prime(n)) return n;\n\n    using internal::gcd_stein;\n\
-    \    using internal::u64;\n    const internal::Montgomery m(n);\n\n    constexpr\
-    \ u64 C1 = 1, C2 = 2, M = 512;\n    u64 Z1 = 1, Z2 = 2;\n\nretry:\n    u64 z1\
-    \ = Z1, z2 = Z2;\n    for (size_t k = M;; k *= 2) {\n        const u64 x1 = z1\
-    \ + n;\n        const u64 x2 = z2 + n;\n        for (size_t j = 0; j < k; j +=\
-    \ M) {\n            const u64 y1 = z1;\n            const u64 y2 = z2;\n\n   \
-    \         u64 q1 = 1, q2 = 2;\n            z1 = m.fma(z1, z1, C1);\n         \
-    \   z2 = m.fma(z2, z2, C2);\n            for (size_t i = 0; i < M; ++i) {\n  \
-    \              u64 t1 = x1 - z1;\n                u64 t2 = x2 - z2;\n        \
-    \        z1 = m.fma(z1, z1, C1);\n                z2 = m.fma(z2, z2, C2);\n  \
-    \              q1 = m.mul(q1, t1);\n                q2 = m.mul(q2, t2);\n    \
-    \        }\n            q1 = m.mul(q1, x1 - z1);\n            q2 = m.mul(q2, x2\
-    \ - z2);\n\n            u64 q3 = m.mul(q1, q2);\n            u64 g3 = gcd_stein(n,\
-    \ q3);\n            if (g3 == 1) continue;\n            if (g3 != n) return g3;\n\
-    \n            u64 g1 = gcd_stein(n, q1);\n            u64 g2 = gcd_stein(n, q2);\n\
-    \n            u64 C = g1 != 1 ? C1 : C2;\n            u64 x = g1 != 1 ? x1 : x2;\n\
-    \            u64 z = g1 != 1 ? y1 : y2;\n            u64 g = g1 != 1 ? g1 : g2;\n\
-    \n            if (g == n) {\n                do {\n                    z = m.fma(z,\
-    \ z, C);\n                    g = gcd_stein(n, x - z);\n                } while\
-    \ (g == 1);\n            }\n            if (g != n) return g;\n\n            Z1\
-    \ += 2;\n            Z2 += 2;\n            goto retry;\n        }\n    }\n}\n\n\
-    /**\n * @brief \u9AD8\u901F\u7D20\u56E0\u6570\u5206\u89E3\n * @param n \u5206\u89E3\
-    \u3059\u308B\u6574\u6570\n * @return std::vector<std::pair<ll, int>> (\u7D20\u56E0\
-    \u6570, \u6307\u6570)\n * \u306E\u30DA\u30A2\u3092\u7D20\u56E0\u6570\u306E\u6607\
-    \u9806\u306B\u683C\u7D0D\u3057\u305F\u914D\u5217\n * @note \u8A08\u7B97\u91CF\
-    : \u671F\u5F85\u5024 O(N^{1/4})\n */\ninline std::vector<std::pair<ll, int>> factorize(ll\
-    \ n) {\n    std::vector<std::pair<ll, int>> res;\n    if (n <= 1) return res;\n\
-    \n    int cnt2 = __builtin_ctzll(n);\n    if (cnt2 > 0) {\n        res.emplace_back(2,\
-    \ cnt2);\n        n >>= cnt2;\n    }\n    if (n == 1) return res;\n\n    std::vector<ll>\
-    \ primes;\n    auto dfs = [&](auto self, ll m) -> void {\n        if (m <= 1)\
-    \ return;\n        if (is_prime(m)) {\n            primes.push_back(m);\n    \
-    \        return;\n        }\n        ll d = pollard_rho(m);\n        self(self,\
-    \ d);\n        self(self, m / d);\n    };\n    dfs(dfs, n);\n    std::sort(primes.begin(),\
-    \ primes.end());\n\n    ll cur = primes[0];\n    int cnt = 1;\n    for (size_t\
-    \ i = 1; i < primes.size(); i++) {\n        if (primes[i] == cur) {\n        \
-    \    cnt++;\n        } else {\n            res.emplace_back(cur, cnt);\n     \
-    \       cur = primes[i];\n            cnt = 1;\n        }\n    }\n    res.emplace_back(cur,\
-    \ cnt);\n    return res;\n}\n\n/**\n * @brief \u7D20\u56E0\u6570\u5206\u89E3\u306E\
-    \u7D50\u679C\u304B\u3089\u7D04\u6570\u3092\u5217\u6319\u3059\u308B\n * @tparam\
-    \ T \u6574\u6570\u578B\n * @param factors factorize() \u7B49\u3067\u5F97\u3089\
-    \u308C\u305F (\u7D20\u56E0\u6570, \u6307\u6570) \u306E\u914D\u5217\n * @return\
-    \ std::vector<T> \u7D04\u6570\u3092\u6607\u9806\u306B\u30BD\u30FC\u30C8\u3057\u305F\
-    \u914D\u5217\n */\ntemplate <typename T>\ninline std::vector<T> divisors_from_factors(\n\
+    \ */\nnamespace internal {\n\n// Binary GCD (Stein's algorithm)\ninline u64 gcd_stein(u64\
+    \ x, u64 y) {\n    if (x == 0) return y;\n    if (y == 0) return x;\n    int n\
+    \ = __builtin_ctzll(x);\n    int m = __builtin_ctzll(y);\n    x >>= n;\n    y\
+    \ >>= m;\n    while (x != y) {\n        int s = __builtin_ctzll(x - y);\n    \
+    \    bool f = x > y;\n        u64 max_v = f ? x : y;\n        y = f ? y : x;\n\
+    \        x = (max_v - y) >> s;\n    }\n    return x << (n < m ? n : m);\n}\n\n\
+    }  // namespace internal\n/** @endcond */\n\n/**\n * @brief Miller-Rabin\u7D20\
+    \u6570\u5224\u5B9A\u6CD5 (\u30E2\u30F3\u30B4\u30E1\u30EA\u4E57\u7B97\u7248)\n\
+    \ */\ninline bool is_prime(ll n_) {\n    if (n_ <= 1) return false;\n    u64 n\
+    \ = n_;\n    if (n == 2 || n == 3 || n == 5 || n == 7) return true;\n    if (n\
+    \ % 2 == 0 || n % 3 == 0 || n % 5 == 0 || n % 7 == 0) return false;\n\n    Montgomery\
+    \ m(n);\n    u64 d = n - 1;\n    int s = __builtin_ctzll(d);\n    d >>= s;\n\n\
+    \    u64 one = m.one();\n    u64 minus_one = n - one;\n    u64 r2 = m.r2();\n\n\
+    \    auto check = [&](const auto& bases) {\n        for (u64 a : bases) {\n  \
+    \          if (n <= a) break;\n            u64 a_mont = m.mul(a, r2);\n      \
+    \      u64 x = m.pow(a_mont, d, one);\n            if (x == one || x == minus_one)\
+    \ continue;\n            bool composite = true;\n            for (int r = 1; r\
+    \ < s; r++) {\n                x = m.norm(m.mul(x, x));\n                if (x\
+    \ == one) return false;\n                if (x == minus_one) {\n             \
+    \       composite = false;\n                    break;\n                }\n  \
+    \          }\n            if (composite) return false;\n        }\n        return\
+    \ true;\n    };\n\n    if (n < 4759123141ULL) {\n        static constexpr u64\
+    \ bases_small[] = {2, 7, 61};\n        return check(bases_small);\n    } else\
+    \ {\n        static constexpr u64 bases_large[] = {2,      325,     9375,    \
+    \  28178,\n                                              450775, 9780504, 1795265022};\n\
+    \        return check(bases_large);\n    }\n}\n\n/**\n * @brief Pollard's rho\u30A2\
+    \u30EB\u30B4\u30EA\u30BA\u30E0\u306B\u3088\u308B\u7D20\u56E0\u6570\u63A2\u7D22\
+    \n */\ninline ll pollard_rho(ll n_) {\n    assert(n_ > 1);\n    u64 n = n_;\n\
+    \    if (n % 2 == 0) return 2;\n    if (is_prime(n)) return n;\n\n    using internal::gcd_stein;\n\
+    \    const Montgomery m(n);\n\n    constexpr u64 C1 = 1, C2 = 2, M = 512;\n  \
+    \  u64 Z1 = 1, Z2 = 2;\n\nretry:\n    u64 z1 = Z1, z2 = Z2;\n    for (size_t k\
+    \ = M;; k *= 2) {\n        const u64 x1 = z1 + n;\n        const u64 x2 = z2 +\
+    \ n;\n        for (size_t j = 0; j < k; j += M) {\n            const u64 y1 =\
+    \ z1;\n            const u64 y2 = z2;\n\n            u64 q1 = 1, q2 = 2;\n   \
+    \         z1 = m.fma(z1, z1, C1);\n            z2 = m.fma(z2, z2, C2);\n     \
+    \       for (size_t i = 0; i < M; ++i) {\n                u64 t1 = x1 - z1;\n\
+    \                u64 t2 = x2 - z2;\n                z1 = m.fma(z1, z1, C1);\n\
+    \                z2 = m.fma(z2, z2, C2);\n                q1 = m.mul(q1, t1);\n\
+    \                q2 = m.mul(q2, t2);\n            }\n            q1 = m.mul(q1,\
+    \ x1 - z1);\n            q2 = m.mul(q2, x2 - z2);\n\n            u64 q3 = m.mul(q1,\
+    \ q2);\n            u64 g3 = gcd_stein(n, q3);\n            if (g3 == 1) continue;\n\
+    \            if (g3 != n) return g3;\n\n            u64 g1 = gcd_stein(n, q1);\n\
+    \            u64 g2 = gcd_stein(n, q2);\n\n            u64 C = g1 != 1 ? C1 :\
+    \ C2;\n            u64 x = g1 != 1 ? x1 : x2;\n            u64 z = g1 != 1 ? y1\
+    \ : y2;\n            u64 g = g1 != 1 ? g1 : g2;\n\n            if (g == n) {\n\
+    \                do {\n                    z = m.fma(z, z, C);\n             \
+    \       g = gcd_stein(n, x - z);\n                } while (g == 1);\n        \
+    \    }\n            if (g != n) return g;\n\n            Z1 += 2;\n          \
+    \  Z2 += 2;\n            goto retry;\n        }\n    }\n}\n\n// factorize, divisors_from_factors,\
+    \ divisors, phi\n// \u306F\u5909\u66F4\u306A\u3057\u306E\u305F\u3081\u7701\u7565\
+    \u305B\u305A\u305D\u306E\u307E\u307E\u7DAD\u6301\ninline std::vector<std::pair<ll,\
+    \ int>> factorize(ll n) {\n    std::vector<std::pair<ll, int>> res;\n    if (n\
+    \ <= 1) return res;\n\n    int cnt2 = __builtin_ctzll(n);\n    if (cnt2 > 0) {\n\
+    \        res.emplace_back(2, cnt2);\n        n >>= cnt2;\n    }\n    if (n ==\
+    \ 1) return res;\n\n    std::vector<ll> primes;\n    auto dfs = [&](auto self,\
+    \ ll m) -> void {\n        if (m <= 1) return;\n        if (is_prime(m)) {\n \
+    \           primes.push_back(m);\n            return;\n        }\n        ll d\
+    \ = pollard_rho(m);\n        self(self, d);\n        self(self, m / d);\n    };\n\
+    \    dfs(dfs, n);\n    std::sort(primes.begin(), primes.end());\n\n    ll cur\
+    \ = primes[0];\n    int cnt = 1;\n    for (size_t i = 1; i < primes.size(); i++)\
+    \ {\n        if (primes[i] == cur) {\n            cnt++;\n        } else {\n \
+    \           res.emplace_back(cur, cnt);\n            cur = primes[i];\n      \
+    \      cnt = 1;\n        }\n    }\n    res.emplace_back(cur, cnt);\n    return\
+    \ res;\n}\n\ntemplate <typename T>\ninline std::vector<T> divisors_from_factors(\n\
     \    const std::vector<std::pair<T, int>>& factors) {\n    size_t sz = 1;\n  \
     \  for (const auto& [p, e] : factors) sz *= (e + 1);\n    std::vector<T> res;\n\
     \    res.reserve(sz);\n    res.push_back(1);\n\n    for (const auto& [p, e] :\
@@ -141,26 +110,18 @@ data:
     \    for (int i = 1; i <= e; i++) {\n            p_pow *= p;\n            for\
     \ (size_t j = 0; j < cur_sz; j++) {\n                res.push_back(res[j] * p_pow);\n\
     \            }\n        }\n    }\n    std::sort(res.begin(), res.end());\n   \
-    \ return res;\n}\n\n/**\n * @brief \u5358\u4E00\u306E\u6574\u6570\u306E\u7D04\u6570\
-    \u3092\u6607\u9806\u306B\u5217\u6319\u3059\u308B\n * @param n \u5BFE\u8C61\u306E\
-    \u6574\u6570\n * @return std::vector<ll> \u7D04\u6570\u3092\u6607\u9806\u306B\u30BD\
-    \u30FC\u30C8\u3057\u305F\u914D\u5217\n * @note \u8A08\u7B97\u91CF: \u671F\u5F85\
-    \u5024 O(N^{1/4} + D log D) (D\u306F\u7D04\u6570\u306E\u500B\u6570)\n */\ninline\
-    \ std::vector<ll> divisors(ll n) {\n    if (n <= 0) return {};\n    return divisors_from_factors(factorize(n));\n\
-    }\n\n/**\n * @brief \u30AA\u30A4\u30E9\u30FC\u306E\u03C6\u95A2\u6570\n * @details\
-    \ n\u3068\u4E92\u3044\u306B\u7D20\u306A1\u4EE5\u4E0An\u4EE5\u4E0B\u306E\u6574\u6570\
-    \u306E\u500B\u6570\u3092\u6C42\u3081\u308B\n * @param n \u5BFE\u8C61\u306E\u6574\
-    \u6570\n * @return ll \u03C6(n) \u306E\u5024\n * @note \u8A08\u7B97\u91CF: \u671F\
-    \u5F85\u5024 O(N^{1/4})\n */\ninline ll phi(ll n) {\n    if (n <= 0) return 0;\n\
-    \    ll res = n;\n    for (const auto& [p, e] : factorize(n)) {\n        res -=\
-    \ res / p;\n    }\n    return res;\n}\n\n}  // namespace nt"
+    \ return res;\n}\n\ninline std::vector<ll> divisors(ll n) {\n    if (n <= 0) return\
+    \ {};\n    return divisors_from_factors(factorize(n));\n}\n\ninline ll phi(ll\
+    \ n) {\n    if (n <= 0) return 0;\n    ll res = n;\n    for (const auto& [p, e]\
+    \ : factorize(n)) {\n        res -= res / p;\n    }\n    return res;\n}\n\n} \
+    \ // namespace nt"
   dependsOn:
   - lib/nt/modular.hpp
   isVerificationFile: false
   path: lib/nt/factorize.hpp
   requiredBy:
   - lib/nt/primitive_root.hpp
-  timestamp: '2026-10-17 10:16:40+09:00'
+  timestamp: '2026-10-17 15:06:39+09:00'
   verificationStatus: LIBRARY_ALL_AC
   verifiedWith:
   - verify/nt/factorize.test.cpp
