@@ -111,7 +111,8 @@ inline ll extgcd(ll a, ll b, ll& x, ll& y) {
 inline ll inv_mod(ll a, ll m) {
     assert(m > 0);
     auto [g, x, y] = extgcd(a, m);
-    return x;
+    assert(g == 1);
+    return x < 0 ? x + m : x;
 }
 
 /**
@@ -159,14 +160,14 @@ inline std::pair<ll, ll> crt(ll r1, ll m1, ll r2, ll m2) {
 inline std::pair<ll, ll> crt(const std::vector<ll>& r,
                              const std::vector<ll>& m) {
     assert(r.size() == m.size());
-    i128 r0 = 0, m0 = 1;
+    ll r0 = 0, m0 = 1;
     for (size_t i = 0; i < r.size(); i++) {
-        auto [r1, m1] = crt((ll)r0, (ll)m0, r[i], m[i]);
+        auto [r1, m1] = crt(r0, m0, r[i], m[i]);
         if (m1 == 0) return {0, 0};
         r0 = r1;
         m0 = m1;
     }
-    return {(ll)r0, (ll)m0};
+    return {r0, m0};
 }
 
 }  // namespace nt

@@ -19,7 +19,7 @@ struct LinearSieve {
                 primes.push_back(i);
             }
             for (int p : primes) {
-                if (p > spf[i] || i * p > n) break;
+                if (p > spf[i] || 1LL * i * p > n) break;
                 spf[i * p] = p;
             }
         }
@@ -39,10 +39,10 @@ struct LinearSieve {
         while (m > 1) {
             int p = spf[m];
             int cnt = 0;
-            while (m % p == 0) {
+            do {
                 cnt++;
-                m /= p;
-            }
+                m /= p;  // 前計算で next_m[m] = m / spf[m] を持てば不要になる
+            } while (spf[m] == p);
             res.emplace_back(p, cnt);
         }
         return res;
@@ -56,10 +56,10 @@ struct LinearSieve {
         while (m > 1) {
             int p = spf[m];
             int cnt = 0;
-            while (m % p == 0) {
+            do {
                 cnt++;
                 m /= p;
-            }
+            } while (spf[m] == p);
             size_t sz = res.size();
             int p_pow = 1;
             for (int i = 0; i < cnt; i++) {
@@ -74,7 +74,7 @@ struct LinearSieve {
     }
 };
 
-// 0 から max_n までのオイラーの φ 関数テーブル: O(N log log N)
+// 0 から max_n までのオイラーの φ 関数テーブル: O(N)
 inline std::vector<int> phi_table(int max_n) {
     assert(max_n >= 0);
     std::vector<int> phi(max_n + 1, 0), primes;

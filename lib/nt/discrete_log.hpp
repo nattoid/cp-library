@@ -119,8 +119,7 @@ inline ll discrete_log(ll a, ll b, ll m, bool allow_zero = true) {
         cur = (ll)((u128)cur * a_step % m);
         int j = mp.find(cur);
         if (j != -1) {
-            ll ans = i * step - j + k;
-            if (ans > 0 || allow_zero) return ans;
+            return i * step - j + k;
         }
     }
 

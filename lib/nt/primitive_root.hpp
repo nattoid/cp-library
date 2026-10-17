@@ -147,37 +147,25 @@ inline ll primitive_root(ll n) {
         exps.push_back(phi_n / q);
     }
 
-    if (n & 1) {
-        // n = p^k の場合は奇数なのでモンゴメリ乗算が使える
-        Montgomery mont(n);
-        u64 one = mont.one();
-        u64 r2 = mont.r2();
-        for (u64 g = 2;; g++) {
-            if (g % p == 0) continue;
-            u64 g_mont = mont.mul(g, r2);
-            bool ok = true;
-            for (u64 exp : exps) {
-                if (mont.pow(g_mont, exp, one) == one) {
-                    ok = false;
-                    break;
-                }
+    // n = p^k または n = 2*p^k のいずれであっても、
+    // 奇数の法 m = p^k 上での位数が phi(n) == phi(m) に一致するかをモンゴメリ乗算で判定できる！
+    Montgomery mont(m);
+    u64 one = mont.one();
+    u64 r2 = mont.r2();
+    u64 step = (n & 1) ? 1 : 2;
+    u64 start = (n & 1) ? 2 : 3;
+
+    for (u64 g = start;; g += step) {
+        if (g % p == 0) continue;
+        u64 g_mont = mont.mul(g % m, r2);
+        bool ok = true;
+        for (u64 exp : exps) {
+            if (mont.pow(g_mont, exp, one) == one) {
+                ok = false;
+                break;
             }
-            if (ok) return g;
         }
-    } else {
-        // n = 2*p^k の場合
-        for (ll g = 3;;
-             g += 2) {  // gcd(g, 2*p^k) == 1 より g は奇数のみ探索すればよい
-            if (g % p == 0) continue;
-            bool ok = true;
-            for (u64 exp : exps) {
-                if (pow_mod(g, exp, n) == 1) {
-                    ok = false;
-                    break;
-                }
-            }
-            if (ok) return g;
-        }
+        if (ok) return g;
     }
 }
 
