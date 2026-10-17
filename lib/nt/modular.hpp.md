@@ -2,10 +2,10 @@
 data:
   _extendedDependsOn: []
   _extendedRequiredBy:
-  - icon: ':warning:'
+  - icon: ':x:'
     path: lib/nt/discrete_log.hpp
     title: "\u96E2\u6563\u5BFE\u6570\u554F\u984C (Extended Baby-step Giant-step)"
-  - icon: ':heavy_check_mark:'
+  - icon: ':question:'
     path: lib/nt/factorize.hpp
     title: lib/nt/factorize.hpp
   - icon: ':heavy_check_mark:'
@@ -16,18 +16,24 @@ data:
     title: "\u4E57\u6CD5\u4F4D\u6570 (Order) \u3068\u539F\u59CB\u6839 (Primitive Root)\
       \ \u306E\u63A2\u7D22"
   _extendedVerifiedWith:
+  - icon: ':x:'
+    path: verify/nt/discrete_logarithm.test.cpp
+    title: verify/nt/discrete_logarithm.test.cpp
   - icon: ':heavy_check_mark:'
     path: verify/nt/factorize.test.cpp
     title: verify/nt/factorize.test.cpp
+  - icon: ':x:'
+    path: verify/nt/primality_test.test.cpp
+    title: verify/nt/primality_test.test.cpp
   - icon: ':heavy_check_mark:'
     path: verify/nt/primitive_root.test.cpp
     title: verify/nt/primitive_root.test.cpp
   - icon: ':heavy_check_mark:'
     path: verify/nt/sqrt_mod.test.cpp
     title: verify/nt/sqrt_mod.test.cpp
-  _isVerificationFailed: false
+  _isVerificationFailed: true
   _pathExtension: hpp
-  _verificationStatusIcon: ':heavy_check_mark:'
+  _verificationStatusIcon: ':question:'
   attributes:
     document_title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u300164bit\u6E1B\u7B97\u578B\
       \u9045\u5EF6\u30E2\u30F3\u30B4\u30E1\u30EA\u6F14\u7B97\u5668\u3001extgcd\u3001\
@@ -112,8 +118,10 @@ data:
   - lib/nt/primitive_root.hpp
   - lib/nt/discrete_log.hpp
   timestamp: '2026-10-17 16:01:29+09:00'
-  verificationStatus: LIBRARY_ALL_AC
+  verificationStatus: LIBRARY_SOME_WA
   verifiedWith:
+  - verify/nt/discrete_logarithm.test.cpp
+  - verify/nt/primality_test.test.cpp
   - verify/nt/primitive_root.test.cpp
   - verify/nt/sqrt_mod.test.cpp
   - verify/nt/factorize.test.cpp

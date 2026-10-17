@@ -85,16 +85,16 @@ data:
       title: lib/modint/montgomery-modint.hpp
   - name: lib/nt
     pages:
-    - icon: ':warning:'
+    - icon: ':x:'
       path: lib/nt/discrete_log.hpp
       title: "\u96E2\u6563\u5BFE\u6570\u554F\u984C (Extended Baby-step Giant-step)"
-    - icon: ':heavy_check_mark:'
+    - icon: ':question:'
       path: lib/nt/factorize.hpp
       title: lib/nt/factorize.hpp
     - icon: ':heavy_check_mark:'
       path: lib/nt/mod_sqrt.hpp
       title: "\u5E73\u65B9\u5270\u4F59 (Tonelli-Shanks algorithm)"
-    - icon: ':heavy_check_mark:'
+    - icon: ':question:'
       path: lib/nt/modular.hpp
       title: "\u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u300164bit\u6E1B\u7B97\u578B\u9045\
         \u5EF6\u30E2\u30F3\u30B4\u30E1\u30EA\u6F14\u7B97\u5668\u3001extgcd\u3001CRT"
@@ -151,9 +151,15 @@ data:
   verificationCategories:
   - name: verify/nt
     pages:
+    - icon: ':x:'
+      path: verify/nt/discrete_logarithm.test.cpp
+      title: verify/nt/discrete_logarithm.test.cpp
     - icon: ':heavy_check_mark:'
       path: verify/nt/factorize.test.cpp
       title: verify/nt/factorize.test.cpp
+    - icon: ':x:'
+      path: verify/nt/primality_test.test.cpp
+      title: verify/nt/primality_test.test.cpp
     - icon: ':heavy_check_mark:'
       path: verify/nt/primitive_root.test.cpp
       title: verify/nt/primitive_root.test.cpp
