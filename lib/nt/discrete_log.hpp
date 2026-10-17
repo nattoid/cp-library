@@ -1,9 +1,10 @@
+#pragma once
+
 /**
  * @file discrete_log.hpp
  * @brief 離散対数問題 (Extended Baby-step Giant-step)
  */
 
-#pragma once
 #include <cassert>
 #include <cmath>
 #include <cstdint>

@@ -1,9 +1,10 @@
+#pragma once
+
 /**
  * @file primitive_root.hpp
  * @brief 乗法位数 (Order) と原始根 (Primitive Root) の探索
  */
 
-#pragma once
 #include <cassert>
 #include <cstdint>
 #include <numeric>

@@ -1,9 +1,10 @@
+#pragma once
+
 /**
  * @file modular.hpp
  * @brief モジュラ演算、64bit減算型遅延モンゴメリ演算器、extgcd、CRT
  */
 
-#pragma once
 #include <cassert>
 #include <cstdint>
 #include <tuple>

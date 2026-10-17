@@ -1,10 +1,11 @@
+#pragma once
+
 /**
  * @file mod_sqrt.hpp
  * @brief 平方剰余 (Tonelli-Shanks algorithm)
  * @see https://nyaannyaan.github.io/library/modulo/mod-sqrt.hpp
  */
 
-#pragma once
 #include <cassert>
 #include <cstdint>
 

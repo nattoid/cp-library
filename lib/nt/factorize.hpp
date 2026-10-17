@@ -1,3 +1,5 @@
+#pragma once
+
 /**
  * @file factorize.hpp
  * @brief
@@ -6,7 +8,6 @@
  * @see https://judge.yosupo.jp/submission/189742
  */
 
-#pragma once
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -83,7 +84,7 @@ inline bool is_prime(ll n_) {
         static constexpr u64 bases_small[] = {2, 7, 61};
         return check(bases_small);
     } else {
-        static constexpr u64 bases_large[] = {2,      325,     9375,      28178,
+        static constexpr u64 bases_large[] = {2, 325, 9375, 28178,
                                               450775, 9780504, 1795265022};
         return check(bases_large);
     }
