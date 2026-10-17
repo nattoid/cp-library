@@ -1,4 +1,5 @@
 {
+"verify/nt/discrete_logarithm_mod.test.cpp": "2026-10-17 17:07:52 +0900",
 "verify/nt/factorize.test.cpp": "2026-10-17 16:39:42 +0900",
 "verify/nt/primality_test.test.cpp": "2026-10-17 16:39:42 +0900",
 "verify/nt/primitive_root.test.cpp": "2026-10-17 16:39:42 +0900",
