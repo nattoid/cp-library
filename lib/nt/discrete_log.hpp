@@ -105,7 +105,7 @@ inline ll discrete_log(ll a, ll b, ll m, bool allow_zero = true) {
     // 2. c * a^{x - k} = b (mod m) を BSGS で解く (gcd(a, m) == 1)
     // x - k = i * step - j (1 <= i <= step, 0 <= j < step) とおく
     // c * (a^step)^i = b * a^j (mod m)
-    ll step = std::sqrtl(m) + 1;
+    ll step = std::sqrt(static_cast<long double>(m)) + 1;
     internal::FastHashMap mp(step);
 
     ll cur = b;

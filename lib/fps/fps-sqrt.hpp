@@ -1,6 +1,6 @@
 #pragma once
 #include "../fps/formal-power-series.hpp"
-#include "../modulo/mod-sqrt.hpp"
+#include "../nt/mod_sqrt.hpp"
 
 template <typename mint>
 FormalPowerSeries<mint> sqrt(const FormalPowerSeries<mint>& f, int deg = -1) {
