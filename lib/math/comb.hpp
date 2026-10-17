@@ -1,28 +1,37 @@
 #pragma once
-#include <vector>
 #include <algorithm>
+#include <cassert>
+#include <type_traits>
+#include <vector>
 
-template <class T> struct Comb {
+template <class T>
+struct Comb {
     std::vector<T> fac, invfac, invs;
 
-    Comb() : fac(1, 1), invfac(1, 1), invs(1, 1) {}
+    Comb(int MAX = 0) {
+        assert(T::mod() != 0 && "Comb<mint>()");
+        fac.resize(1, 1);
+        invfac.resize(1, 1);
+        invs.resize(1, 1);
+        if (MAX > 0) extend(MAX + 1);
+    }
 
     void extend(int n) {
         int sz = fac.size();
         if (n < sz) return;
         long long p = T::mod();
         int new_sz = std::min((long long)std::max(n + 1, sz * 2), p);
-        
+
         fac.resize(new_sz);
         invfac.resize(new_sz);
         invs.resize(new_sz);
-        
+
         for (int i = sz; i < new_sz; i++) {
             fac[i] = fac[i - 1] * i;
         }
         invfac[new_sz - 1] = fac.back().inv();
         invs[new_sz - 1] = invfac[new_sz - 1] * fac[new_sz - 2];
-        
+
         for (int i = new_sz - 1; i > sz; i--) {
             invfac[i - 1] = invfac[i] * i;
             invs[i - 1] = invfac[i - 1] * fac[i - 2];
@@ -34,8 +43,11 @@ template <class T> struct Comb {
         extend(n);
         return fac[n] * invfac[r] * invfac[n - r];
     }
-    
-    //単一O(r)
+
+    inline T operator()(int n, int r) {
+        return C(n, r);
+    }
+
     T C_large(long long n, int r) {
         if (r < 0 || n < r) return 0;
         extend(r);
@@ -66,14 +78,14 @@ template <class T> struct Comb {
         return fac[n] * invfac[n - r];
     }
 
-    T fact(int n){
-        if(n < 0) return 0;
+    T fact(int n) {
+        if (n < 0) return 0;
         extend(n);
         return fac[n];
     }
 
-    T finv(int n){
-        if(n < 0) return 0;
+    T finv(int n) {
+        if (n < 0) return 0;
         extend(n);
         return invfac[n];
     }
@@ -84,7 +96,7 @@ template <class T> struct Comb {
         return invs[n];
     }
 
-    T S2_single(int n, int k){
+    T S2_single(int n, int k) {
         if (k < 0 || n < k) return 0;
         T res = 0;
         for (int i = 0; i <= k; i++) {
@@ -93,14 +105,12 @@ template <class T> struct Comb {
         }
         return res * finv(k);
     }
-    
-    // 重複組合せ: [x^r] 1 / (1-x)^n
+
     T H(int n, int r) {
         if (n < 0 || r < 0) return 0;
         return r == 0 ? 1 : C(n + r - 1, r);
     }
 
-    // 多項係数
     template <typename I>
     T multinomial(const std::vector<I>& r) {
         static_assert(std::is_integral<I>::value == true);
@@ -112,5 +122,10 @@ template <class T> struct Comb {
         T res = fact(n);
         for (auto& x : r) res *= finv(x);
         return res;
+    }
+
+    template <typename I>
+    T operator()(const std::vector<I>& r) {
+        return multinomial(r);
     }
 };

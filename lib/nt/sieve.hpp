@@ -1,8 +1,8 @@
 #pragma once
-#include <vector>
-#include <utility>
 #include <algorithm>
 #include <cassert>
+#include <utility>
+#include <vector>
 
 namespace nt {
 
@@ -115,13 +115,4 @@ inline std::vector<int> mobius_table(int max_n) {
     return mu;
 }
 
-// 0 から max_n までのメルテンス関数 M(n) = ∑_{k=1}^n μ(k) テーブル: O(N)
-inline std::vector<int> mertens_table(int max_n) {
-    auto m = mobius_table(max_n);
-    for (int i = 1; i <= max_n; i++) {
-        m[i] += m[i - 1];
-    }
-    return m;
-}
-
-} // namespace nt
+}  // namespace nt
