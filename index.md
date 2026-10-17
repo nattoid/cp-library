@@ -152,8 +152,8 @@ data:
   - name: verify/nt
     pages:
     - icon: ':x:'
-      path: verify/nt/discrete_logarithm.test.cpp
-      title: verify/nt/discrete_logarithm.test.cpp
+      path: verify/nt/discrete_logarithm_mod.test.cpp
+      title: verify/nt/discrete_logarithm_mod.test.cpp
     - icon: ':heavy_check_mark:'
       path: verify/nt/factorize.test.cpp
       title: verify/nt/factorize.test.cpp

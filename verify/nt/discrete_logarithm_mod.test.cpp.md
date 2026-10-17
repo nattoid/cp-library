@@ -15,11 +15,11 @@ data:
   _verificationStatusIcon: ':x:'
   attributes:
     '*NOT_SPECIAL_COMMENTS*': ''
-    PROBLEM: https://judge.yosupo.jp/problem/discrete_logarithm
+    PROBLEM: https://judge.yosupo.jp/problem/discrete_logarithm_mod
     links:
-    - https://judge.yosupo.jp/problem/discrete_logarithm
-  bundledCode: "#line 1 \"verify/nt/discrete_logarithm.test.cpp\"\n#define PROBLEM\
-    \ \"https://judge.yosupo.jp/problem/discrete_logarithm\"\n#include <iostream>\n\
+    - https://judge.yosupo.jp/problem/discrete_logarithm_mod
+  bundledCode: "#line 1 \"verify/nt/discrete_logarithm_mod.test.cpp\"\n#define PROBLEM\
+    \ \"https://judge.yosupo.jp/problem/discrete_logarithm_mod\"\n#include <iostream>\n\
     \n#line 2 \"lib/nt/discrete_log.hpp\"\n\n/**\n * @file discrete_log.hpp\n * @brief\
     \ \u96E2\u6563\u5BFE\u6570\u554F\u984C (Extended Baby-step Giant-step)\n */\n\n\
     #include <cassert>\n#include <cmath>\n#include <cstdint>\n#include <numeric>\n\
@@ -129,12 +129,12 @@ data:
     \    cur = c;\n    for (ll i = 1; i <= step; i++) {\n        cur = (ll)((u128)cur\
     \ * a_step % m);\n        int j = mp.find(cur);\n        if (j != -1) {\n    \
     \        return i * step - j + k;\n        }\n    }\n\n    return -1;\n}\n\n}\
-    \  // namespace nt\n#line 5 \"verify/nt/discrete_logarithm.test.cpp\"\n\nusing\
-    \ namespace std;\nusing ll = long long;\nint main() {\n    int q;\n    cin >>\
-    \ q;\n    while (q--) {\n        int x, y, m;\n        cin >> x >> y >> m;\n \
-    \       cout << nt::discrete_log(x, y, m) << \"\\n\";\n    }\n}\n"
-  code: "#define PROBLEM \"https://judge.yosupo.jp/problem/discrete_logarithm\"\n\
-    #include <iostream>\n\n#include \"../../lib/nt/discrete_log.hpp\"\n\nusing namespace\
+    \  // namespace nt\n#line 5 \"verify/nt/discrete_logarithm_mod.test.cpp\"\n\n\
+    using namespace std;\nusing ll = long long;\nint main() {\n    int q;\n    cin\
+    \ >> q;\n    while (q--) {\n        int x, y, m;\n        cin >> x >> y >> m;\n\
+    \        cout << nt::discrete_log(x, y, m) << \"\\n\";\n    }\n}\n"
+  code: "#define PROBLEM \"https://judge.yosupo.jp/problem/discrete_logarithm_mod\"\
+    \n#include <iostream>\n\n#include \"../../lib/nt/discrete_log.hpp\"\n\nusing namespace\
     \ std;\nusing ll = long long;\nint main() {\n    int q;\n    cin >> q;\n    while\
     \ (q--) {\n        int x, y, m;\n        cin >> x >> y >> m;\n        cout <<\
     \ nt::discrete_log(x, y, m) << \"\\n\";\n    }\n}"
@@ -142,15 +142,15 @@ data:
   - lib/nt/discrete_log.hpp
   - lib/nt/modular.hpp
   isVerificationFile: true
-  path: verify/nt/discrete_logarithm.test.cpp
+  path: verify/nt/discrete_logarithm_mod.test.cpp
   requiredBy: []
-  timestamp: '2026-10-17 16:39:42+09:00'
+  timestamp: '2026-10-17 16:44:09+09:00'
   verificationStatus: TEST_WRONG_ANSWER
   verifiedWith: []
-documentation_of: verify/nt/discrete_logarithm.test.cpp
+documentation_of: verify/nt/discrete_logarithm_mod.test.cpp
 layout: document
 redirect_from:
-- /verify/verify/nt/discrete_logarithm.test.cpp
-- /verify/verify/nt/discrete_logarithm.test.cpp.html
-title: verify/nt/discrete_logarithm.test.cpp
+- /verify/verify/nt/discrete_logarithm_mod.test.cpp
+- /verify/verify/nt/discrete_logarithm_mod.test.cpp.html
+title: verify/nt/discrete_logarithm_mod.test.cpp
 ---

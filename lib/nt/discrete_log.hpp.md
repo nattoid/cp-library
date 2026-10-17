@@ -8,8 +8,8 @@ data:
   _extendedRequiredBy: []
   _extendedVerifiedWith:
   - icon: ':x:'
-    path: verify/nt/discrete_logarithm.test.cpp
-    title: verify/nt/discrete_logarithm.test.cpp
+    path: verify/nt/discrete_logarithm_mod.test.cpp
+    title: verify/nt/discrete_logarithm_mod.test.cpp
   _isVerificationFailed: true
   _pathExtension: hpp
   _verificationStatusIcon: ':x:'
@@ -183,7 +183,7 @@ data:
   timestamp: '2026-10-17 16:39:42+09:00'
   verificationStatus: LIBRARY_ALL_WA
   verifiedWith:
-  - verify/nt/discrete_logarithm.test.cpp
+  - verify/nt/discrete_logarithm_mod.test.cpp
 documentation_of: lib/nt/discrete_log.hpp
 layout: document
 redirect_from:

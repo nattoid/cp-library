@@ -17,8 +17,8 @@ data:
       \ \u306E\u63A2\u7D22"
   _extendedVerifiedWith:
   - icon: ':x:'
-    path: verify/nt/discrete_logarithm.test.cpp
-    title: verify/nt/discrete_logarithm.test.cpp
+    path: verify/nt/discrete_logarithm_mod.test.cpp
+    title: verify/nt/discrete_logarithm_mod.test.cpp
   - icon: ':heavy_check_mark:'
     path: verify/nt/factorize.test.cpp
     title: verify/nt/factorize.test.cpp
@@ -172,7 +172,7 @@ data:
   timestamp: '2026-10-17 16:39:42+09:00'
   verificationStatus: LIBRARY_SOME_WA
   verifiedWith:
-  - verify/nt/discrete_logarithm.test.cpp
+  - verify/nt/discrete_logarithm_mod.test.cpp
   - verify/nt/primality_test.test.cpp
   - verify/nt/primitive_root.test.cpp
   - verify/nt/sqrt_mod.test.cpp
