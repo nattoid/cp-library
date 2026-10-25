@@ -129,11 +129,20 @@ data:
   - name: lib/template
     pages:
     - icon: ':warning:'
-      path: lib/template/template_atcoder.cpp
-      title: lib/template/template_atcoder.cpp
+      path: lib/template/template_common.cpp
+      title: lib/template/template_common.cpp
     - icon: ':warning:'
-      path: lib/template/template_codeforces.cpp
-      title: lib/template/template_codeforces.cpp
+      path: lib/template/template_head_ac.cpp
+      title: lib/template/template_head_ac.cpp
+    - icon: ':warning:'
+      path: lib/template/template_head_cf.cpp
+      title: lib/template/template_head_cf.cpp
+    - icon: ':warning:'
+      path: lib/template/template_main_ac.cpp
+      title: lib/template/template_main_ac.cpp
+    - icon: ':warning:'
+      path: lib/template/template_main_cf.cpp
+      title: lib/template/template_main_cf.cpp
   - name: lib/util
     pages:
     - icon: ':warning:'

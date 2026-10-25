@@ -25,6 +25,7 @@ data:
     \u6319\u3001\u30AA\u30A4\u30E9\u30FC\u306E\u03C6\u95A2\u6570\u306A\u3069\u3092\
     \u63D0\u4F9B\u3059\u308B\u6574\u6570\u8AD6\u30E9\u30A4\u30D6\u30E9\u30EA\n * @see\
     \ https://andantesoft.hatenablog.com/entry/2025/05/21/164352\n * @see https://judge.yosupo.jp/submission/189742\n\
+    \ * @see https://github.com/yosupo06/library-checker-problems/issues/880#issuecomment-1569403176\n\
     \ */\n\n#include <algorithm>\n#include <cassert>\n#include <cstdint>\n#include\
     \ <utility>\n#include <vector>\n\n#line 2 \"lib/nt/modular.hpp\"\n\n/**\n * @file\
     \ modular.hpp\n * @brief \u30E2\u30B8\u30E5\u30E9\u6F14\u7B97\u300164bit\u6E1B\
@@ -86,7 +87,7 @@ data:
     \ m) {\n    assert(r.size() == m.size());\n    ll r0 = 0, m0 = 1;\n    for (size_t\
     \ i = 0; i < r.size(); i++) {\n        auto [r1, m1] = crt(r0, m0, r[i], m[i]);\n\
     \        if (m1 == 0) return {0, 0};\n        r0 = r1;\n        m0 = m1;\n   \
-    \ }\n    return {r0, m0};\n}\n\n}  // namespace nt\n#line 18 \"lib/nt/factorize.hpp\"\
+    \ }\n    return {r0, m0};\n}\n\n}  // namespace nt\n#line 19 \"lib/nt/factorize.hpp\"\
     \n\nnamespace nt {\n\n/** @cond INTERNAL */\nnamespace internal {\n\n// Binary\
     \ GCD (Stein's algorithm)\ninline u64 gcd_stein(u64 x, u64 y) {\n    if (x ==\
     \ 0) return y;\n    if (y == 0) return x;\n    int n = __builtin_ctzll(x);\n \
@@ -177,7 +178,7 @@ data:
   isVerificationFile: true
   path: verify/nt/primality_test.test.cpp
   requiredBy: []
-  timestamp: '2026-10-17 16:39:42+09:00'
+  timestamp: '2026-10-25 18:55:57+09:00'
   verificationStatus: TEST_ACCEPTED
   verifiedWith: []
 documentation_of: verify/nt/primality_test.test.cpp
