@@ -6,6 +6,7 @@
  * 素数判定、素因数分解、約数列挙、オイラーのφ関数などを提供する整数論ライブラリ
  * @see https://andantesoft.hatenablog.com/entry/2025/05/21/164352
  * @see https://judge.yosupo.jp/submission/189742
+ * @see https://github.com/yosupo06/library-checker-problems/issues/880#issuecomment-1569403176
  */
 
 #include <algorithm>
