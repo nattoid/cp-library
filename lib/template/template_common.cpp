@@ -21,9 +21,7 @@ using vvl = vector<vl>;
 using vvvl = vector<vvl>;
 template<typename T> using vc=vector<T>;
 template<typename T> using vvc=vc<vc<T>>;
-using mint = atcoder::modint998244353;
-//using mint = atcoder::modint1000000007;
-//using mint = atcoder::modint;
+template<typename T> using vvvc=vvc<vc<T>>;
 template<typename T> using min_priority_queue = priority_queue<T, vector<T>, greater<T>>;
 
 const int INF = 1 << 30;

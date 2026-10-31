@@ -1,4 +1,4 @@
-void solve() {
+void slv() {
 
     return;
 }
@@ -7,7 +7,7 @@ int main() {
     int t;
     cin >> t;
     while (t--) {
-        solve();
+        slv();
     }
     return 0;
 }
