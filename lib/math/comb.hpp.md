@@ -107,8 +107,8 @@ data:
   isVerificationFile: false
   path: lib/math/comb.hpp
   requiredBy:
-  - lib/fps/taylor-shift.hpp
   - lib/fps/lagrange-interpolation-point.hpp
+  - lib/fps/taylor-shift.hpp
   timestamp: '2026-10-17 10:16:40+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []

@@ -15,25 +15,24 @@ data:
     using ti = tuple<int, int, int>;\nusing tl = tuple<ll, ll, ll>;\nusing vi = vector<int>;\n\
     using vvi = vector<vi>;\nusing vvvi = vector<vvi>;\nusing vl = vector<ll>;\nusing\
     \ vvl = vector<vl>;\nusing vvvl = vector<vvl>;\ntemplate<typename T> using vc=vector<T>;\n\
-    template<typename T> using vvc=vc<vc<T>>;\nusing mint = atcoder::modint998244353;\n\
-    //using mint = atcoder::modint1000000007;\n//using mint = atcoder::modint;\ntemplate<typename\
-    \ T> using min_priority_queue = priority_queue<T, vector<T>, greater<T>>;\n\n\
-    const int INF = 1 << 30;\nconst ll LINF = 1LL << 60;\nconst int dx[4] = {-1, 0,\
-    \ 1, 0};\nconst int dy[4] = {0, -1, 0, 1};\nconst int dx8[8] = {-1, -1, -1, 0,\
-    \ 0, 1, 1, 1};\nconst int dy8[8] = {-1, 0, 1, -1, 1, -1, 0, 1};\n\n#define rep(i,\
-    \ l, n) for(int i = (l); i < (int)(n); ++i)\n#define REP(i, n) rep(i, 0, n)\n\
-    #define repe(i, l, n) for(int i = (l); i <= (int)(n); i++)\n#define per(i, n,\
-    \ l) for(int i = (n); i > (int)(l); i--)\n#define pb push_back\n#define eb emplace_back\n\
-    #define all(v) (v).begin(), (v).end()\n#define rall(v) (v).rbegin(), (v).rend()\n\
-    #define sz(A) (ll)(A).size()\n#define LB(A, x) (ll)(lower_bound(all(A), x)-A.begin())\n\
-    #define UB(A, x) (ll)(upper_bound(all(A), x)-A.begin())\n#define COU(A,x) (UB(A,x)-LB(A,x))\n\
-    #define F first\n#define S second\n#define el \"\\n\"\n#define die(a) {cout<<a<<endl;return\
-    \ 0;}\n#define dier(a) {return a;}\ntemplate<typename T1,typename T2>ostream&operator<<(ostream&os,const\
-    \ pair<T1,T2>&p){os<<p.F<<\" \"<<p.S;return os;}\ntemplate<typename T1,typename\
-    \ T2>istream&operator>>(istream&is,pair<T1,T2>&p){is>>p.F>>p.S;return is;}\ntemplate<typename\
-    \ T1,typename T2,typename T3>ostream&operator<<(ostream&os,const tuple<T1,T2,T3>&t){os<<get<0>(t)<<\"\
-    \ \"<<get<1>(t)<<\" \"<<get<2>(t);return os;}\ntemplate<typename T1,typename T2,typename\
-    \ T3>istream&operator>>(istream&is,tuple<T1,T2,T3>&t){is>>get<0>(t)>>get<1>(t)>>get<2>(t);return\
+    template<typename T> using vvc=vc<vc<T>>;\ntemplate<typename T> using vvvc=vvc<vc<T>>;\n\
+    template<typename T> using min_priority_queue = priority_queue<T, vector<T>, greater<T>>;\n\
+    \nconst int INF = 1 << 30;\nconst ll LINF = 1LL << 60;\nconst int dx[4] = {-1,\
+    \ 0, 1, 0};\nconst int dy[4] = {0, -1, 0, 1};\nconst int dx8[8] = {-1, -1, -1,\
+    \ 0, 0, 1, 1, 1};\nconst int dy8[8] = {-1, 0, 1, -1, 1, -1, 0, 1};\n\n#define\
+    \ rep(i, l, n) for(int i = (l); i < (int)(n); ++i)\n#define REP(i, n) rep(i, 0,\
+    \ n)\n#define repe(i, l, n) for(int i = (l); i <= (int)(n); i++)\n#define per(i,\
+    \ n, l) for(int i = (n); i > (int)(l); i--)\n#define pb push_back\n#define eb\
+    \ emplace_back\n#define all(v) (v).begin(), (v).end()\n#define rall(v) (v).rbegin(),\
+    \ (v).rend()\n#define sz(A) (ll)(A).size()\n#define LB(A, x) (ll)(lower_bound(all(A),\
+    \ x)-A.begin())\n#define UB(A, x) (ll)(upper_bound(all(A), x)-A.begin())\n#define\
+    \ COU(A,x) (UB(A,x)-LB(A,x))\n#define F first\n#define S second\n#define el \"\
+    \\n\"\n#define die(a) {cout<<a<<endl;return 0;}\n#define dier(a) {return a;}\n\
+    template<typename T1,typename T2>ostream&operator<<(ostream&os,const pair<T1,T2>&p){os<<p.F<<\"\
+    \ \"<<p.S;return os;}\ntemplate<typename T1,typename T2>istream&operator>>(istream&is,pair<T1,T2>&p){is>>p.F>>p.S;return\
+    \ is;}\ntemplate<typename T1,typename T2,typename T3>ostream&operator<<(ostream&os,const\
+    \ tuple<T1,T2,T3>&t){os<<get<0>(t)<<\" \"<<get<1>(t)<<\" \"<<get<2>(t);return\
+    \ os;}\ntemplate<typename T1,typename T2,typename T3>istream&operator>>(istream&is,tuple<T1,T2,T3>&t){is>>get<0>(t)>>get<1>(t)>>get<2>(t);return\
     \ is;}\ntemplate<typename T>ostream&operator<<(ostream&os,const vector<T>&v){REP(i,sz(v))os<<v[i]<<(i+1!=sz(v)?\"\
     \ \":\"\");return os;}\ntemplate<typename T>istream&operator>>(istream&is,vector<T>&v){for(T&in:v)is>>in;return\
     \ is;}\nstd::istream& operator>>(std::istream& is, __int128_t& v) {\n    std::string\
@@ -82,8 +81,7 @@ data:
     using tl = tuple<ll, ll, ll>;\nusing vi = vector<int>;\nusing vvi = vector<vi>;\n\
     using vvvi = vector<vvi>;\nusing vl = vector<ll>;\nusing vvl = vector<vl>;\nusing\
     \ vvvl = vector<vvl>;\ntemplate<typename T> using vc=vector<T>;\ntemplate<typename\
-    \ T> using vvc=vc<vc<T>>;\nusing mint = atcoder::modint998244353;\n//using mint\
-    \ = atcoder::modint1000000007;\n//using mint = atcoder::modint;\ntemplate<typename\
+    \ T> using vvc=vc<vc<T>>;\ntemplate<typename T> using vvvc=vvc<vc<T>>;\ntemplate<typename\
     \ T> using min_priority_queue = priority_queue<T, vector<T>, greater<T>>;\n\n\
     const int INF = 1 << 30;\nconst ll LINF = 1LL << 60;\nconst int dx[4] = {-1, 0,\
     \ 1, 0};\nconst int dy[4] = {0, -1, 0, 1};\nconst int dx8[8] = {-1, -1, -1, 0,\
@@ -146,7 +144,7 @@ data:
   isVerificationFile: false
   path: lib/template/template_common.cpp
   requiredBy: []
-  timestamp: '2026-10-25 18:55:57+09:00'
+  timestamp: '2026-10-31 20:37:09+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []
 documentation_of: lib/template/template_common.cpp

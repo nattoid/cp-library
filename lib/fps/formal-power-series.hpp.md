@@ -193,13 +193,13 @@ data:
   isVerificationFile: false
   path: lib/fps/formal-power-series.hpp
   requiredBy:
-  - lib/fps/sparse-fps.hpp
-  - lib/fps/taylor-shift.hpp
-  - lib/fps/ntt-friendly-fps.hpp
-  - lib/fps/mod-pow.hpp
   - lib/fps/fps-sqrt.hpp
+  - lib/fps/ntt-friendly-fps.hpp
+  - lib/fps/sparse-fps.hpp
   - lib/fps/arbitrary-fps.hpp
   - lib/fps/fps-circular.hpp
+  - lib/fps/taylor-shift.hpp
+  - lib/fps/mod-pow.hpp
   timestamp: '2026-10-16 16:16:24+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []

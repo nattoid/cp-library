@@ -105,9 +105,9 @@ data:
   isVerificationFile: false
   path: lib/modint/montgomery-modint.hpp
   requiredBy:
+  - lib/ntt/arbitrary-ntt.hpp
   - lib/fps/arbitrary-fps.hpp
   - lib/fps/fps-circular.hpp
-  - lib/ntt/arbitrary-ntt.hpp
   timestamp: '2026-10-17 10:16:40+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []

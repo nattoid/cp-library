@@ -1,6 +1,11 @@
 ---
 data:
   libraryCategories:
+  - name: lib/bit
+    pages:
+    - icon: ':warning:'
+      path: lib/bit/bit_util.hpp
+      title: lib/bit/bit_util.hpp
   - name: lib/ds
     pages:
     - icon: ':warning:'

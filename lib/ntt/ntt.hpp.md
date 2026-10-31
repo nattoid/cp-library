@@ -185,9 +185,9 @@ data:
   isVerificationFile: false
   path: lib/ntt/ntt.hpp
   requiredBy:
+  - lib/ntt/arbitrary-ntt.hpp
   - lib/fps/ntt-friendly-fps.hpp
   - lib/fps/arbitrary-fps.hpp
-  - lib/ntt/arbitrary-ntt.hpp
   timestamp: '2026-10-16 11:43:12+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []

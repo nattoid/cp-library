@@ -28,6 +28,10 @@ data:
 
     using mint = atcoder::modint998244353;
 
+    // using mint = atcoder::modint1000000007;
+
+    // using mint = atcoder::modint;
+
     using vm = vector<mint>;
 
     using vvm = vector<vm>;
@@ -52,6 +56,10 @@ data:
 
     using mint = atcoder::modint998244353;
 
+    // using mint = atcoder::modint1000000007;
+
+    // using mint = atcoder::modint;
+
     using vm = vector<mint>;
 
     using vvm = vector<vm>;
@@ -63,7 +71,7 @@ data:
   isVerificationFile: false
   path: lib/template/template_head_ac.cpp
   requiredBy: []
-  timestamp: '2026-10-25 18:55:57+09:00'
+  timestamp: '2026-10-31 20:37:09+09:00'
   verificationStatus: LIBRARY_NO_TESTS
   verifiedWith: []
 documentation_of: lib/template/template_head_ac.cpp

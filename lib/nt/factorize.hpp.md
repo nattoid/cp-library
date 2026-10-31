@@ -266,9 +266,9 @@ data:
   timestamp: '2026-10-25 18:55:57+09:00'
   verificationStatus: LIBRARY_ALL_AC
   verifiedWith:
+  - verify/nt/factorize.test.cpp
   - verify/nt/primality_test.test.cpp
   - verify/nt/primitive_root.test.cpp
-  - verify/nt/factorize.test.cpp
 documentation_of: lib/nt/factorize.hpp
 layout: document
 ---
